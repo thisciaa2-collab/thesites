@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Admin Access | TheSites</title>
+    <style>
+        body { font-family: 'Inter', sans-serif; display: flex; justify-content: center; padding-top: 100px; background: #f4f4f4; }
+        .box { background: white; padding: 40px; border-radius: 12px; box-shadow: 0 5px 15px rgba(0,0,0,0.1); width: 300px; }
+        input { width: 100%; padding: 10px; margin: 10px 0; border: 1px solid #ddd; }
+        button { width: 100%; padding: 10px; background: #008080; color: white; border: none; cursor: pointer; }
+    </style>
+</head>
+<body>
+    <div class="box">
+        <h2>Acceso Administrador</h2>
+        <input type="email" id="email" placeholder="Email">
+        <input type="password" id="pass" placeholder="Contraseña">
+        <button id="login-btn">Entrar</button>
+    </div>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+        import { getAuth, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+
+        const firebaseConfig = { /* TU CONFIG FIREBASE DE SIEMPRE */ };
+        const auth = getAuth(initializeApp(firebaseConfig));
+        const admins = ["thisciaa2@gmail.com", "crisa201555@gmail.com"];
+
+        document.getElementById('login-btn').onclick = async () => {
+            const email = document.getElementById('email').value;
+            const pass = document.getElementById('pass').value;
+
+            // Validación "hardcoded" extra para el usuario específico
+            if((email === "crisaguayo" || email === "thisciaa2@gmail.com") && pass === "tobita1037") {
+                window.location.href = "newzone.html";
+            } else {
+                try {
+                    const userCredential = await signInWithEmailAndPassword(auth, email, pass);
+                    if(admins.includes(userCredential.user.email)) {
+                        window.location.href = "newzone.html";
+                    } else { alert("Acceso denegado"); }
+                } catch(e) { alert("Error de acceso"); }
+            }
+        };
+    </script>
+</body>
+</html>
