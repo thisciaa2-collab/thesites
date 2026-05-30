@@ -3,10 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>TheSites | Panel de Búsqueda Inteligente</title>
+    <title>TheSites | Panel Principal</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght=400;500;600;700;800&display=swap');
 
         :root {
             --bg-light: #faf9f6;       /* Fondo crema característico */
@@ -17,6 +17,7 @@
             --accent-sites: #008080;   /* Verde Teal */
             --accent-hover: #006666;
             --border-soft: rgba(0, 0, 0, 0.08);
+            --danger-color: #de350b;
         }
 
         * {
@@ -34,6 +35,25 @@
             flex-direction: column;
         }
 
+        /* PANTALLA DE PROTECCIÓN DE RUTA */
+        #loading-route {
+            position: fixed;
+            top:0; left:0; width:100%; height:100vh;
+            background: var(--bg-light);
+            z-index: 9999;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .spinner {
+            width: 40px; height: 40px;
+            border: 4px solid rgba(0,128,128,0.1);
+            border-left-color: var(--accent-sites);
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+        }
+        @keyframes spin { to { transform: rotate(360deg); } }
+
         /* NAVBAR PRINCIPAL */
         .navbar {
             display: flex;
@@ -42,6 +62,8 @@
             padding: 20px 40px;
             background-color: var(--bg-light);
             border-bottom: 1px solid var(--border-soft);
+            position: relative;
+            z-index: 100;
         }
 
         .brand {
@@ -55,16 +77,31 @@
             letter-spacing: -0.5px;
         }
 
-        .user-profile {
+        /* CONTENEDOR DE CONFIGURACIÓN Y PERFIL */
+        .user-menu-container {
+            position: relative;
+        }
+
+        .user-profile-btn {
             display: flex;
             align-items: center;
             gap: 12px;
             cursor: pointer;
+            background: white;
+            padding: 6px 14px;
+            border-radius: 20px;
+            border: 1px solid var(--border-soft);
+            transition: background 0.2s;
+            user-select: none;
+        }
+
+        .user-profile-btn:hover {
+            background: #f1efe9;
         }
 
         .avatar {
-            width: 36px;
-            height: 36px;
+            width: 30px;
+            height: 30px;
             border-radius: 50%;
             background-color: var(--accent-sites);
             color: white;
@@ -72,7 +109,68 @@
             align-items: center;
             justify-content: center;
             font-weight: 600;
+            font-size: 13px;
+        }
+
+        /* MENÚ DESPLEGABLE DE CONFIGURACIÓN */
+        .settings-dropdown {
+            position: absolute;
+            top: calc(100% + 8px);
+            right: 0;
+            width: 240px;
+            background: var(--bg-card);
+            border: 1px solid var(--border-soft);
+            border-radius: 10px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.08);
+            display: none;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        .settings-dropdown.active {
+            display: flex;
+        }
+
+        .dropdown-header {
+            padding: 14px 16px;
+            font-size: 11px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: var(--text-muted);
+            background: var(--bg-light);
+            border-bottom: 1px solid var(--border-soft);
+        }
+
+        .dropdown-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 12px 16px;
+            color: var(--text-dark);
+            text-decoration: none;
             font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            background: none;
+            border: none;
+            width: 100%;
+            text-align: left;
+            transition: background 0.15s;
+        }
+
+        .dropdown-item:hover {
+            background: rgba(0, 128, 128, 0.05);
+            color: var(--accent-sites);
+        }
+
+        .dropdown-item.danger {
+            color: var(--danger-color);
+        }
+
+        .dropdown-item.danger:hover {
+            background: rgba(222, 53, 11, 0.05);
+            color: var(--danger-color);
         }
 
         /* CONTENEDOR DE BÚSQUEDA */
@@ -135,7 +233,7 @@
             background-color: var(--accent-hover);
         }
 
-        /* ACCESOS RÁPIDOS / CHIPS DE CATEGORÍAS */
+        /* ACCESOS RÁPIDOS */
         .category-chips {
             display: flex;
             justify-content: center;
@@ -165,7 +263,7 @@
             transform: translateY(-2px);
         }
 
-        /* SECCIÓN INFERIOR: RESULTADOS / LUGARES DESTACADOS */
+        /* SECCIÓN INFERIOR */
         .main-content {
             background-color: var(--bg-dark);
             color: white;
@@ -194,7 +292,7 @@
             gap: 24px;
         }
 
-        /* TARJETAS DE LUGARES */
+        /* TARJETAS */
         .place-card {
             background-color: #2b2d31;
             border: 1px solid rgba(255,255,255,0.05);
@@ -251,7 +349,7 @@
             color: #9aa0a6;
         }
 
-        /* INTERFAZ DEL MODAL JAVASCRIPT SELECTOR (MULTIPLE MATCHES) */
+        /* MODAL SELECTOR INTERACTIVO */
         .modal-overlay {
             position: fixed;
             top: 0; left: 0; width: 100%; height: 100%;
@@ -328,13 +426,38 @@
 </head>
 <body>
 
+    <div id="loading-route">
+        <div class="spinner"></div>
+    </div>
+
     <header class="navbar">
-        <a href="index.html" class="brand">
+        <a href="home.html" class="brand">
             <i class="fa-solid fa-map-location-dot"></i> TheSites
         </a>
-        <div class="user-profile">
-            <span style="font-size: 14px; font-weight: 500;">Mi Cuenta</span>
-            <div class="avatar">U</div>
+
+        <div class="user-menu-container">
+            <div class="user-profile-btn" id="profile-toggle-btn">
+                <div class="avatar" id="user-initial">U</div>
+                <span style="font-size: 14px; font-weight: 600;" id="user-display-email">Mi Cuenta</span>
+                <i class="fa-solid fa-chevron-down" style="font-size: 11px; color: var(--text-muted);"></i>
+            </div>
+
+            <div class="settings-dropdown" id="settings-menu">
+                <div class="dropdown-header">Configuración</div>
+                
+                <a href="resetpassword.html" class="dropdown-item">
+                    <i class="fa-solid fa-key" style="color: #888;"></i> Cambiar contraseña
+                </a>
+                
+                <button class="dropdown-item danger" id="btn-delete-account">
+                    <i class="fa-solid fa-user-xmark"></i> Eliminar cuenta
+                </button>
+                
+                <div class="dropdown-header" style="border-top: 1px solid var(--border-soft);">Sesión</div>
+                <button class="dropdown-item" id="btn-logout-action">
+                    <i class="fa-solid fa-arrow-right-from-bracket" style="color: #888;"></i> Cerrar Sesión
+                </button>
+            </div>
         </div>
     </header>
 
@@ -344,7 +467,7 @@
         <div class="search-box-wrapper">
             <i class="fa-solid fa-magnifying-glass"></i>
             <input type="text" id="main-search" placeholder="Buscar colegios, restaurantes, tiendas..." onkeydown="checkEnter(event)">
-            <button class="btn-search-go" onclick="ejecutarBusqueda Inteligente()">Buscar</button>
+            <button class="btn-search-go" onclick="ejecutarBusquedaInteligente()">Buscar</button>
         </div>
 
         <div class="category-chips">
@@ -353,9 +476,6 @@
             </div>
             <div class="chip" onclick="filtrarCategoria('restaurant')">
                 <i class="fa-solid fa-utensils"></i> Restaurantes
-            </div>
-            <div class="chip" onclick="filtrarCategoria('park')">
-                <i class="fa-solid fa-tree"></i> Parques
             </div>
         </div>
     </main>
@@ -378,17 +498,6 @@
                         <p>Chiguayante • Excelencia académica e infraestructura premium.</p>
                     </div>
                 </div>
-
-                <div class="place-card" onclick="navigateLocation('restaurant', 'res_1102')">
-                    <div class="place-header">
-                        <div class="place-icon" style="color: #ff9900; background: rgba(255,153,0,0.1);"><i class="fa-solid fa-burger"></i></div>
-                        <span class="place-distance">A 1.2 km</span>
-                    </div>
-                    <div class="place-info">
-                        <h3>Burger & Co.</h3>
-                        <p>Las mejores hamburguesas artesanales de la comuna.</p>
-                    </div>
-                </div>
             </div>
         </div>
     </section>
@@ -396,21 +505,90 @@
     <div class="modal-overlay" id="search-modal">
         <div class="modal-box">
             <h2 id="modal-title">¿A qué colegio deseas ir?</h2>
-            <ul class="modal-options-list" id="modal-options-container">
-                </ul>
+            <ul class="modal-options-list" id="modal-options-container"></ul>
             <button class="btn-close-modal" onclick="cerrarModal()">Cancelar búsqueda</button>
         </div>
     </div>
 
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+        import { getAuth, onAuthStateChanged, signOut, deleteUser } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyB0XnYCA-jVNsGowSeXpEb4OwUnQZLOitk",
+            authDomain: "thesites2.firebaseapp.com",
+            projectId: "thesites2",
+            storageBucket: "thesites2.firebasestorage.app",
+            messagingSenderId: "372232227026",
+            appId: "1:372232227026:web:77d458d036066ff024450b",
+            measurementId: "G-YL2GDDMJSP"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+
+        // Seguridad de Ruta: Verificar sesión
+        onAuthStateChanged(auth, (user) => {
+            if (!user) {
+                window.location.href = "login.html";
+            } else {
+                document.getElementById('loading-route').style.display = 'none';
+                if(user.email) {
+                    document.getElementById('user-display-email').innerText = user.email.split('@')[0];
+                    document.getElementById('user-initial').innerText = user.email.charAt(0).toUpperCase();
+                }
+            }
+        });
+
+        // Toggle del Menú Desplegable
+        const profileBtn = document.getElementById('profile-toggle-btn');
+        const settingsMenu = document.getElementById('settings-menu');
+
+        profileBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            settingsMenu.classList.toggle('active');
+        });
+
+        document.addEventListener('click', () => {
+            settingsMenu.classList.remove('active');
+        });
+
+        // Acción: Cerrar Sesión
+        document.getElementById('btn-logout-action').addEventListener('click', () => {
+            signOut(auth).then(() => {
+                window.location.href = "login.html";
+            });
+        });
+
+        // Acción Crítica: Eliminar Cuenta
+        document.getElementById('btn-delete-account').addEventListener('click', async () => {
+            const confirmar = confirm("¿Estás absolutamente seguro de que deseas eliminar tu cuenta de TheSites? Esta acción es irreversible.");
+            if (confirmar) {
+                const usuarioActual = auth.currentUser;
+                if (usuarioActual) {
+                    try {
+                        await deleteUser(usuarioActual);
+                        alert("Cuenta eliminada con éxito.");
+                        window.location.href = "register.html";
+                    } catch (error) {
+                        if (error.code === 'auth/requires-recent-login') {
+                            alert("Por motivos de seguridad, esta acción requiere un inicio de sesión reciente. Por favor, cierra sesión e ingresa de nuevo antes de proceder.");
+                        } else {
+                            alert("Error al intentar eliminar la cuenta: " + error.message);
+                        }
+                    }
+                }
+            }
+        });
+    </script>
+
     <script>
-        // BASE DE DATOS LOCAL DE THESITES PARA EL BUSCADOR
         const baseDatosLugares = [
             { id: "sch_andres_bello", nombre: "Colegio Andrés Bello", comuna: "Chiguayante", type: "school", keywords: ["colegio", "andres", "bello"] },
             { id: "sch_andres_bello_conco", nombre: "Colegio Andrés Bello", comuna: "Concepción", type: "school", keywords: ["colegio", "andres", "bello"] },
             { id: "res_1102", nombre: "Burger & Co.", comuna: "Chiguayante", type: "restaurant", keywords: ["burger", "hamburguesa", "co"] }
         ];
 
-        // ALGORITMO DE LEVENSHTEIN (Mide diferencia entre palabras para corregir typos)
         function calcularDistanciaLevenshtein(str1, str2) {
             const track = Array(str2.length + 1).fill(null).map(() => Array(str1.length + 1).fill(null));
             for (let i = 0; i <= str1.length; i += 1) track[0][i] = i;
@@ -419,90 +597,65 @@
                 for (let i = 1; i <= str1.length; i += 1) {
                     const indicator = str1[i - 1] === str2[j - 1] ? 0 : 1;
                     track[j][i] = Math.min(
-                        track[j][i - 1] + 1, // Instertar
-                        track[j - 1][i] + 1, // Borrar
-                        track[j - 1][i - 1] + indicator // Sustituir
+                        track[j][i - 1] + 1,
+                        track[j - 1][i] + 1,
+                        track[j - 1][i - 1] + indicator
                     );
                 }
             }
             return track[str2.length][str1.length];
         }
 
-        // NORMALIZADOR DE TEXTO (Quita acentos y limpia mayúsculas)
         function limpiarTexto(texto) {
-            return texto.toLowerCase()
-                        .normalize("NFD")
-                        .replace(/[\u0300-\u036f]/g, "")
-                        .trim();
+            return texto.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").trim();
         }
 
-        // FUNCIÓN MAESTRA DE REDIRECCIÓN
         function navigateLocation(type, id) {
             window.location.href = `location.html?type=${type}&id=${id}`;
         }
 
-        // EJECUTAR BÚSQUEDA CON TOLERANCIA A ERRORES (Ej: "COELGIO ANDRES BELVL")
         function ejecutarBusquedaInteligente() {
             const campoInput = document.getElementById('main-search').value;
             const queryLimpia = limpiarTexto(campoInput);
-            
             if (queryLimpia === "") return;
 
             const palabrasUsuario = queryLimpia.split(/\s+/);
             let mejoresCoincidencias = [];
 
-            // Analizar cada lugar en la base de datos
             baseDatosLugares.forEach(lugar => {
                 let puntuacionMatch = 0;
-
-                // Comparar cada palabra escrita por el usuario contra las palabras clave del sitio
                 palabrasUsuario.forEach(palabraU => {
                     lugar.keywords.forEach(keyword => {
                         const distancia = calcularDistanciaLevenshtein(palabraU, keyword);
-                        // Si la palabra es idéntica o tiene un error menor (distancia <= 2), cuenta como acierto
-                        if (distancia <= 2) {
-                            puntuacionMatch++;
-                        }
+                        if (distancia <= 2) puntuacionMatch++;
                     });
                 });
-
-                // Si emparejó la mayoría de los términos, lo añadimos a posibles candidatos
                 if (puntuacionMatch >= 2 || (palabrasUsuario.length === 1 && puntuacionMatch >= 1)) {
                     mejoresCoincidencias.push(lugar);
                 }
             });
 
-            // MANEJO DE RESULTADOS ENCONTRADOS
             if (mejoresCoincidencias.length === 1) {
-                // Coincidencia única directa -> Redirigir de inmediato
                 navigateLocation(mejoresCoincidencias[0].type, mejoresCoincidencias[0].id);
-            } 
-            else if (mejoresCoincidencias.length > 1) {
-                // Múltiples opciones encontradas -> Desplegar el selector interactivo solicitado
+            } else if (mejoresCoincidencias.length > 1) {
                 abrirSelectorComunidades(mejoresCoincidencias);
-            } 
-            else {
-                alert("No se encontraron resultados exactos. Intenta escribir otra categoría.");
+            } else {
+                alert("No se encontraron resultados aproximados.");
             }
         }
 
-        // DESPLEGAR INTERFAZ JAVASCRIPT: ¿A qué colegio deseas ir?
         function abrirSelectorComunidades(coincidencias) {
             const modal = document.getElementById('search-modal');
             const container = document.getElementById('modal-options-container');
-            
-            container.innerHTML = ""; // Resetear contenedor
+            container.innerHTML = "";
             
             coincidencias.forEach(lugar => {
                 const li = document.createElement('li');
                 li.className = 'modal-option-item';
                 li.innerHTML = `<i class="fa-solid fa-graduation-cap" style="color: var(--accent-sites);"></i> * ${lugar.nombre} (${lugar.comuna})`;
-                li.onclick = function() {
-                    navigateLocation(lugar.type, lugar.id);
-                };
+                li.onclick = function() { navigateLocation(lugar.type, lugar.id); };
                 container.appendChild(li);
             });
-
             modal.classList.add('active');
         }
 
@@ -511,9 +664,7 @@
         }
 
         function checkEnter(event) {
-            if (event.key === 'Enter') {
-                ejecutarBusquedaInteligente();
-            }
+            if (event.key === 'Enter') ejecutarBusquedaInteligente();
         }
 
         function filtrarCategoria(type) {
