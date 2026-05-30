@@ -1,0 +1,379 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TheSites | Panel de Búsqueda</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+
+        :root {
+            --bg-light: #faf9f6;       /* El tono crema característico */
+            --bg-card: #ffffff;
+            --bg-dark: #1e1f22;        /* Sección inferior */
+            --text-dark: #121212;
+            --text-muted: #65676b;
+            --accent-sites: #008080;   /* Verde Teal */
+            --accent-hover: #006666;
+            --border-soft: rgba(0, 0, 0, 0.08);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-light);
+            color: var(--text-dark);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* NAVBAR PRINCIPAL */
+        .navbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 40px;
+            background-color: var(--bg-light);
+            border-bottom: 1px solid var(--border-soft);
+        }
+
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            text-decoration: none;
+            color: var(--accent-sites);
+            font-weight: 800;
+            font-size: 24px;
+            letter-spacing: -0.5px;
+        }
+
+        .user-profile {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            cursor: pointer;
+        }
+
+        .avatar {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background-color: var(--accent-sites);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            font-size: 14px;
+        }
+
+        /* CONTENEDOR DE BÚSQUEDA */
+        .search-hero {
+            padding: 60px 20px 40px 20px;
+            text-align: center;
+            max-width: 800px;
+            margin: 0 auto;
+            width: 100%;
+        }
+
+        .search-hero h1 {
+            font-size: 36px;
+            font-weight: 800;
+            margin-bottom: 24px;
+            letter-spacing: -1px;
+        }
+
+        /* BARRA DE BÚSQUEDA CORE */
+        .search-box-wrapper {
+            display: flex;
+            background: white;
+            border: 1px solid #cccccc;
+            border-radius: 8px;
+            padding: 6px 12px;
+            align-items: center;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.03);
+            max-width: 600px;
+            margin: 0 auto 30px auto;
+        }
+
+        .search-box-wrapper i {
+            color: var(--text-muted);
+            font-size: 18px;
+            margin-right: 10px;
+        }
+
+        .search-box-wrapper input {
+            flex-grow: 1;
+            border: none;
+            outline: none;
+            font-size: 16px;
+            padding: 10px 0;
+            color: var(--text-dark);
+        }
+
+        .btn-search-go {
+            background-color: var(--accent-sites);
+            color: white;
+            border: none;
+            padding: 10px 24px;
+            border-radius: 6px;
+            font-weight: 600;
+            font-size: 15px;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .btn-search-go:hover {
+            background-color: var(--accent-hover);
+        }
+
+        /* ACCESOS RÁPIDOS / CHIPS DE CATEGORÍAS */
+        .category-chips {
+            display: flex;
+            justify-content: center;
+            gap: 12px;
+            flex-wrap: wrap;
+            margin-bottom: 40px;
+        }
+
+        .chip {
+            background-color: white;
+            border: 1px solid var(--border-soft);
+            padding: 10px 20px;
+            border-radius: 20px;
+            font-size: 14px;
+            font-weight: 500;
+            color: var(--text-dark);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.2s;
+        }
+
+        .chip:hover {
+            border-color: var(--accent-sites);
+            color: var(--accent-sites);
+            transform: translateY(-2px);
+        }
+
+        /* SECCIÓN INFERIOR: RESULTADOS / LUGARES DESTACADOS */
+        .main-content {
+            background-color: var(--bg-dark);
+            color: white;
+            padding: 60px 40px;
+            flex-grow: 1;
+            width: 100%;
+        }
+
+        .section-wrapper {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .section-title {
+            font-size: 22px;
+            font-weight: 700;
+            margin-bottom: 24px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .grid-places {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 24px;
+        }
+
+        /* TARJETAS DE LUGARES */
+        .place-card {
+            background-color: #2b2d31;
+            border: 1px solid rgba(255,255,255,0.05);
+            border-radius: 12px;
+            padding: 24px;
+            cursor: pointer;
+            transition: transform 0.2s, border-color 0.2s;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            height: 180px;
+        }
+
+        .place-card:hover {
+            transform: translateY(-5px);
+            border-color: var(--accent-sites);
+        }
+
+        .place-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+        }
+
+        .place-icon {
+            width: 40px;
+            height: 40px;
+            background-color: rgba(0, 128, 128, 0.2);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #00cccc;
+            font-size: 18px;
+        }
+
+        .place-distance {
+            font-size: 12px;
+            color: #9aa0a6;
+            background-color: rgba(255,255,255,0.05);
+            padding: 4px 8px;
+            border-radius: 12px;
+        }
+
+        .place-info h3 {
+            font-size: 16px;
+            font-weight: 700;
+            margin-bottom: 4px;
+            color: white;
+        }
+
+        .place-info p {
+            font-size: 13px;
+            color: #9aa0a6;
+        }
+    </style>
+</head>
+<body>
+
+    <header class="navbar">
+        <a href="index.html" class="brand">
+            <i class="fa-solid fa-map-location-dot"></i> TheSites
+        </a>
+        <div class="user-profile">
+            <span style="font-size: 14px; font-weight: 500;">Mi Cuenta</span>
+            <div class="avatar">U</div>
+        </div>
+    </header>
+
+    <main class="search-hero">
+        <h1>¿Qué lugar deseas explorar hoy?</h1>
+        
+        <div class="search-box-wrapper">
+            <i class="fa-solid fa-magnifying-glass"></i>
+            <input type="text" id="main-search" placeholder="Buscar colegios, restaurantes, tiendas..." onkeydown="checkEnter(event)">
+            <button class="btn-search-go" onclick="ejecutarBusqueda()">Buscar</button>
+        </div>
+
+        <div class="category-chips">
+            <div class="chip" onclick="navigateLocation('school', 'cat_01')">
+                <i class="fa-solid fa-graduation-cap"></i> Colegios
+            </div>
+            <div class="chip" onclick="navigateLocation('restaurant', 'cat_02')">
+                <i class="fa-solid fa-utensils"></i> Restaurantes
+            </div>
+            <div class="chip" onclick="navigateLocation('park', 'cat_03')">
+                <i class="fa-solid fa-tree"></i> Parques
+            </div>
+            <div class="chip" onclick="navigateLocation('hospital', 'cat_04')">
+                <i class="fa-solid fa-house-medical"></i> Hospitales
+            </div>
+        </div>
+    </main>
+
+    <section class="main-content">
+        <div class="section-wrapper">
+            <div class="section-title">
+                <i class="fa-solid fa-location-dot" style="color: var(--accent-sites);"></i>
+                <span>Lugares Destacados a tu Alrededor</span>
+            </div>
+
+            <div class="grid-places">
+                
+                <div class="place-card" onclick="navigateLocation('school', 'sch_9921')">
+                    <div class="place-header">
+                        <div class="place-icon"><i class="fa-solid fa-school"></i></div>
+                        <span class="place-distance">A 400m</span>
+                    </div>
+                    <div class="place-info">
+                        <h3>Liceo Polivalente Central</h3>
+                        <p>Educación técnica y científica de alto rendimiento.</p>
+                    </div>
+                </div>
+
+                <div class="place-card" onclick="navigateLocation('restaurant', 'res_1102')">
+                    <div class="place-header">
+                        <div class="place-icon" style="color: #ff9900; background: rgba(255,153,0,0.1);"><i class="fa-solid fa-burger"></i></div>
+                        <span class="place-distance">A 1.2 km</span>
+                    </div>
+                    <div class="place-info">
+                        <h3>Burger & Co.</h3>
+                        <p>Las mejores hamburguesas artesanales de la comuna.</p>
+                    </div>
+                </div>
+
+                <div class="place-card" onclick="navigateLocation('park', 'prk_5541')">
+                    <div class="place-header">
+                        <div class="place-icon" style="color: #10b981; background: rgba(16,185,129,0.1);"><i class="fa-solid fa-leaf"></i></div>
+                        <span class="place-distance">A 850m</span>
+                    </div>
+                    <div class="place-info">
+                        <h3>Parque Manuel Rodríguez</h3>
+                        <p>Áreas verdes abiertas, zonas de recreación y deporte.</p>
+                    </div>
+                </div>
+
+                <div class="place-card" onclick="navigateLocation('school', 'sch_0043')">
+                    <div class="place-header">
+                        <div class="place-icon"><i class="fa-solid fa-graduation-cap"></i></div>
+                        <span class="place-distance">A 2.1 km</span>
+                    </div>
+                    <div class="place-info">
+                        <h3>Colegio Británico Norte</h3>
+                        <p>Institución de educación bilingüe básica y media.</p>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <script>
+        // Función maestra para armar la URL exacta requerida
+        function navigateLocation(type, id) {
+            window.location.href = `location.html?type=${type}&id=${id}`;
+        }
+
+        // Ejecutar búsqueda desde el input
+        function ejecutarBusqueda() {
+            const query = document.getElementById('main-search').value.trim().toLowerCase();
+            if(query === "") return;
+
+            // Lógica inteligente para simular redirección según lo que escriba el usuario
+            if (query.includes('colegio') || query.includes('escuela') || query.includes('school')) {
+                navigateLocation('school', 'search_res');
+            } else if (query.includes('restaurante') || query.includes('comida')) {
+                navigateLocation('restaurant', 'search_res');
+            } else {
+                // Por defecto redirige a un tipo general con la búsqueda
+                navigateLocation('general', 'query_id');
+            }
+        }
+
+        // Capturar tecla enter en el buscador
+        function checkEnter(event) {
+            if (event.key === 'Enter') {
+                ejecutarBusqueda();
+            }
+        }
+    </script>
+</body>
+</html>
