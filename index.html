@@ -1,0 +1,406 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TheSites | Descubre lugares cerca de ti</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+
+        :root {
+            --bg-light: #faf9f6;       /* El tono crema/off-white exacto de la foto */
+            --bg-dark: #1e1f22;        /* El fondo oscuro de la sección inferior */
+            --text-dark: #121212;      /* Texto de los títulos principales */
+            --text-muted: #65676b;     /* Subtítulos y enlaces secundarios */
+            --accent-sites: #008080;   /* Un verde teal/turquesa profundo y profesional para mapas/lugares */
+            --accent-hover: #006666;
+            --border-input: #cccccc;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-light);
+            color: var(--text-dark);
+            overflow-x: hidden;
+        }
+
+        /* 1. NAVBAR SUPERIOR (IDÉNTICO AL LAYOUT DE LA FOTO) */
+        .navbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 40px;
+            background-color: var(--bg-light);
+            width: 100%;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .nav-left, .nav-right {
+            display: flex;
+            align-items: center;
+            gap: 28px;
+        }
+
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            text-decoration: none;
+            color: var(--accent-sites);
+            font-weight: 800;
+            font-size: 24px;
+            letter-spacing: -0.5px;
+        }
+
+        .brand i {
+            font-size: 26px;
+        }
+
+        .nav-link {
+            text-decoration: none;
+            color: #222;
+            font-size: 14px;
+            font-weight: 500;
+            transition: color 0.2s;
+        }
+
+        .nav-link:hover {
+            color: var(--accent-sites);
+        }
+
+        .nav-right-link {
+            text-decoration: none;
+            color: #222;
+            font-size: 14px;
+            font-weight: 500;
+        }
+
+        .lang-selector {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 14px;
+            cursor: pointer;
+            color: #222;
+        }
+
+        .help-icon {
+            color: #444;
+            font-size: 18px;
+            cursor: pointer;
+        }
+
+        .btn-login {
+            text-decoration: none;
+            color: var(--accent-sites);
+            font-weight: 600;
+            font-size: 14px;
+        }
+
+        .btn-signup {
+            background-color: var(--accent-sites);
+            color: white;
+            text-decoration: none;
+            padding: 10px 20px;
+            border-radius: 6px;
+            font-size: 14px;
+            font-weight: 600;
+            transition: background-color 0.2s;
+        }
+
+        .btn-signup:hover {
+            background-color: var(--accent-hover);
+        }
+
+        /* 2. HERO SECCIÓN CON EL BUSCADOR CENTRAL ALINEADO */
+        .hero-section {
+            text-align: center;
+            padding: 80px 20px 100px 20px;
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        .hero-section h1 {
+            font-size: 54px;
+            font-weight: 800;
+            letter-spacing: -1.5px;
+            color: #1e1e24;
+            margin-bottom: 24px;
+            line-height: 1.1;
+        }
+
+        .hero-section p {
+            font-size: 16px;
+            color: var(--text-muted);
+            max-width: 720px;
+            margin: 0 auto 36px auto;
+            line-height: 1.6;
+        }
+
+        /* BARRA DE BÚSQUEDA EN UNA FILA EXACTA */
+        .search-wrapper {
+            display: flex;
+            align-items: center;
+            max-width: 580px;
+            margin: 0 auto;
+            gap: 12px;
+        }
+
+        .search-input-box {
+            position: relative;
+            flex-grow: 1;
+            display: flex;
+            align-items: center;
+            background: white;
+            border: 1px solid var(--border-input);
+            border-radius: 6px;
+            padding-left: 16px;
+        }
+
+        .search-input-box i {
+            color: #757575;
+            font-size: 16px;
+            position: absolute;
+        }
+
+        .search-input-box input {
+            width: 100%;
+            border: none;
+            outline: none;
+            padding: 14px 14px 14px 28px;
+            font-size: 15px;
+            color: var(--text-dark);
+            border-radius: 6px;
+        }
+
+        .btn-search {
+            background-color: var(--accent-sites);
+            color: white;
+            border: none;
+            padding: 14px 28px;
+            font-size: 15px;
+            font-weight: 600;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: background-color 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn-search:hover {
+            background-color: var(--accent-hover);
+        }
+
+        /* 3. SECCIÓN INFERIOR OSCURA CON TARJETAS DINÁMICAS */
+        .dark-showcase {
+            background-color: var(--bg-dark);
+            color: white;
+            padding: 100px 40px;
+            text-align: center;
+            width: 100%;
+        }
+
+        .dark-showcase h2 {
+            font-size: 38px;
+            font-weight: 800;
+            letter-spacing: -1px;
+            margin-bottom: 18px;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+            line-height: 1.2;
+        }
+
+        .dark-showcase p.sub-dark {
+            color: #9aa0a6;
+            font-size: 15px;
+            max-width: 680px;
+            margin: 0 auto 50px auto;
+            line-height: 1.5;
+        }
+
+        /* FILA DE TARJETAS INFERIORES */
+        .cards-grid {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            max-width: 1200px;
+            margin: 0 auto;
+            flex-wrap: wrap;
+        }
+
+        .feature-card {
+            background-color: #2b2d31;
+            border-radius: 8px;
+            padding: 24px;
+            width: 280px;
+            text-align: left;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            animation: fadeInUp 0.4s ease forwards;
+        }
+
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(15px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .card-icon {
+            width: 40px;
+            height: 40px;
+            background-color: rgba(0, 128, 128, 0.15);
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #00aaaa;
+            font-size: 18px;
+            margin-bottom: 16px;
+        }
+
+        .feature-card h3 {
+            font-size: 16px;
+            font-weight: 700;
+            margin-bottom: 8px;
+            color: #ffffff;
+        }
+
+        .feature-card p {
+            color: #9aa0a6;
+            font-size: 13.5px;
+            line-height: 1.5;
+        }
+
+        .card-meta {
+            margin-top: 12px;
+            font-size: 12px;
+            color: var(--accent-sites);
+            font-weight: 600;
+        }
+    </style>
+</head>
+<body>
+
+    <header class="navbar">
+        <div class="nav-left">
+            <a href="#" class="brand">
+                <i class="fa-solid fa-map-location-dot"></i> TheSites
+            </a>
+            <nav class="nav-left" style="gap: 20px;">
+                <a href="#" class="nav-link">Cómo funciona</a>
+                <a href="#" class="nav-link">Añadir Lugar</a>
+                <a href="#" class="nav-link">Explorar Mapas</a>
+            </nav>
+        </div>
+        
+        <div class="nav-right">
+            <a href="#" class="nav-right-link" style="font-size: 14px;">Registrar Negocio</a>
+            <div class="lang-selector">
+                <i class="fa-solid fa-globe"></i> ES (CL)
+            </div>
+            <i class="fa-solid fa-circle-question help-icon"></i>
+            <a href="#" class="btn-login">Entrar</a>
+            <a href="register.html" class="btn-signup">Registrarse</a>
+        </div>
+    </header>
+
+    <main class="hero-section">
+        <h1>Buscador de lugares cercanos para ti</h1>
+        <p>Encuentra al instante restaurantes, cafeterías, parques y servicios comerciales a la redonda de tu posición actual. Autoriza tu ubicación para obtener resultados en tiempo real.</p>
+        
+        <div class="search-wrapper">
+            <div class="search-input-box">
+                <i class="fa-solid fa-location-crosshairs"></i>
+                <input type="text" id="search-query" placeholder="¿Qué estás buscando? (ej. Cafeterías, Hoteles...)">
+            </div>
+            <button class="btn-search" onclick="buscarLugares cercanos()">
+                <i class="fa-solid fa-magnifying-glass"></i> Buscar
+            </button>
+        </div>
+    </main>
+
+    <section class="dark-showcase">
+        <h2 id="section-title">TheSites rastrea la infraestructura de tu barrio</h2>
+        <p class="sub-dark" id="section-desc">Activa tu ubicación o escribe una categoría arriba para mapear dinámicamente todos los puntos clave de interés que te rodean.</p>
+        
+        <div class="cards-grid" id="places-container">
+            <div class="feature-card">
+                <div class="card-icon"><i class="fa-solid fa-utensils"></i></div>
+                <h3>Gastronomía Local</h3>
+                <p>Descubre los restaurantes y centros de comida con mejores reseñas a pasos de tu casa.</p>
+            </div>
+            <div class="feature-card">
+                <div class="card-icon"><i class="fa-solid fa-mug-hot"></i></div>
+                <h3>Espacios de Café</h3>
+                <p>Filtra por cafeterías óptimas para trabajo remoto o reuniones casuales rápidamente.</p>
+            </div>
+            <div class="feature-card">
+                <div class="card-icon"><i class="fa-solid fa-store"></i></div>
+                <h3>Comercio Cercano</h3>
+                <p>Encuentra almacenes, farmacias y supermercados abiertos en tu cuadrante actual.</p>
+            </div>
+        </div>
+    </section>
+
+    <script>
+        function buscarLugares() {
+            const query = document.getElementById('search-query').value.trim();
+            const container = document.getElementById('places-container');
+            
+            if (navigator.geolocation) {
+                // Cambiar textos para simular carga
+                document.getElementById('section-title').innerText = "Rastreando tu señal GPS...";
+                document.getElementById('section-desc').innerText = `Buscando "${query || 'Lugares de interés'}" en tus coordenadas actuales...`;
+                
+                navigator.geolocation.getCurrentPosition(
+                    (position) => {
+                        const lat = position.coords.latitude.toFixed(4);
+                        const lon = position.coords.longitude.toFixed(4);
+                        
+                        document.getElementById('section-title').innerText = "Lugares encontrados cerca de ti";
+                        document.getElementById('section-desc').innerText = `Resultados optimizados para la Latitud: ${lat}, Longitud: ${lon}`;
+                        
+                        // Generar tarjetas simuladas basadas en la ubicación real del usuario
+                        const categoria = query || "Sitio Recomendado";
+                        container.innerHTML = `
+                            <div class="feature-card">
+                                <div class="card-icon"><i class="fa-solid fa-star"></i></div>
+                                <h3>${categoria} Central</h3>
+                                <p>El punto más popular valorado por la comunidad de la zona.</p>
+                                <div class="card-meta"><i class="fa-solid fa-walking"></i> A 450 metros</div>
+                            </div>
+                            <div class="feature-card">
+                                <div class="card-icon"><i class="fa-solid fa-location-dot"></i></div>
+                                <h3>${categoria} Express</h3>
+                                <p>Ideal para visitas rápidas o retiros inmediatos sin filas largas.</p>
+                                <div class="card-meta"><i class="fa-solid fa-walking"></i> A 1.2 km</div>
+                            </div>
+                            <div class="feature-card">
+                                <div class="card-icon"><i class="fa-solid fa-clock"></i></div>
+                                <h3>${categoria} 24/7</h3>
+                                <p>Establecimiento verificado con atención continuada durante toda la noche.</p>
+                                <div class="card-meta"><i class="fa-solid fa-car"></i> A 5 min en auto</div>
+                            </div>
+                        `;
+                    },
+                    (error) => {
+                        alert("Para buscar lugares cercanos, por favor permite el acceso a tu ubicación.");
+                        document.getElementById('section-title').innerText = "Acceso de ubicación denegado";
+                    }
+                );
+            } else {
+                alert("Tu navegador no soporta geolocalización.");
+            }
+        }
+    </script>
+
+</body>
+</html>
