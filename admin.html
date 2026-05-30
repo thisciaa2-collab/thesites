@@ -22,7 +22,14 @@
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
         import { getAuth, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
 
-        const firebaseConfig = { /* TU CONFIG FIREBASE DE SIEMPRE */ };
+        const firebaseConfig = {
+        apiKey: "AIzaSyB0XnYCA-jVNsGowSeXpEb4OwUnQZLOitk",
+        authDomain: "thesites2.firebaseapp.com",
+        projectId: "thesites2",
+        storageBucket: "thesites2.firebasestorage.app",
+        messagingSenderId: "372232227026",
+        appId: "1:372232227026:web:77d458d036066ff024450b",
+        measurementId: "G-YL2GDDMJSP"};
         const auth = getAuth(initializeApp(firebaseConfig));
         const admins = ["thisciaa2@gmail.com", "crisa201555@gmail.com"];
 
