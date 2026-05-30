@@ -2,517 +2,34 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>TheSites | Panel Principal</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght=400;500;600;700;800&display=swap');
-
-        :root {
-            --bg-light: #faf9f6;       /* Fondo crema característico */
-            --bg-card: #ffffff;
-            --bg-dark: #1e1f22;        /* Sección inferior */
-            --text-dark: #121212;
-            --text-muted: #65676b;
-            --accent-sites: #008080;   /* Verde Teal */
-            --accent-hover: #006666;
-            --border-soft: rgba(0, 0, 0, 0.08);
-            --danger-color: #de350b;
-        }
-
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: 'Inter', sans-serif;
-        }
-
-        body {
-            background-color: var(--bg-light);
-            color: var(--text-dark);
-            min-height: 100vh;
-            display: flex;
-            flex-direction: column;
-        }
-
-        /* PANTALLA DE PROTECCIÓN DE RUTA */
-        #loading-route {
-            position: fixed;
-            top:0; left:0; width:100%; height:100vh;
-            background: var(--bg-light);
-            z-index: 9999;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-        .spinner {
-            width: 40px; height: 40px;
-            border: 4px solid rgba(0,128,128,0.1);
-            border-left-color: var(--accent-sites);
-            border-radius: 50%;
-            animation: spin 0.8s linear infinite;
-        }
-        @keyframes spin { to { transform: rotate(360deg); } }
-
-        /* NAVBAR PRINCIPAL */
-        .navbar {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 20px 40px;
-            background-color: var(--bg-light);
-            border-bottom: 1px solid var(--border-soft);
-            position: relative;
-            z-index: 100;
-        }
-
-        .brand {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            text-decoration: none;
-            color: var(--accent-sites);
-            font-weight: 800;
-            font-size: 24px;
-            letter-spacing: -0.5px;
-        }
-
-        /* CONTENEDOR DE CONFIGURACIÓN Y PERFIL */
-        .user-menu-container {
-            position: relative;
-        }
-
-        .user-profile-btn {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            cursor: pointer;
-            background: white;
-            padding: 6px 14px;
-            border-radius: 20px;
-            border: 1px solid var(--border-soft);
-            transition: background 0.2s;
-            user-select: none;
-        }
-
-        .user-profile-btn:hover {
-            background: #f1efe9;
-        }
-
-        .avatar {
-            width: 30px;
-            height: 30px;
-            border-radius: 50%;
-            background-color: var(--accent-sites);
-            color: white;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: 600;
-            font-size: 13px;
-        }
-
-        /* MENÚ DESPLEGABLE DE CONFIGURACIÓN */
-        .settings-dropdown {
-            position: absolute;
-            top: calc(100% + 8px);
-            right: 0;
-            width: 240px;
-            background: var(--bg-card);
-            border: 1px solid var(--border-soft);
-            border-radius: 10px;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.08);
-            display: none;
-            flex-direction: column;
-            overflow: hidden;
-        }
-
-        .settings-dropdown.active {
-            display: flex;
-        }
-
-        .dropdown-header {
-            padding: 14px 16px;
-            font-size: 11px;
-            font-weight: 700;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            color: var(--text-muted);
-            background: var(--bg-light);
-            border-bottom: 1px solid var(--border-soft);
-        }
-
-        .dropdown-item {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            padding: 12px 16px;
-            color: var(--text-dark);
-            text-decoration: none;
-            font-size: 14px;
-            font-weight: 500;
-            cursor: pointer;
-            background: none;
-            border: none;
-            width: 100%;
-            text-align: left;
-            transition: background 0.15s;
-        }
-
-        .dropdown-item:hover {
-            background: rgba(0, 128, 128, 0.05);
-            color: var(--accent-sites);
-        }
-
-        .dropdown-item.danger {
-            color: var(--danger-color);
-        }
-
-        .dropdown-item.danger:hover {
-            background: rgba(222, 53, 11, 0.05);
-            color: var(--danger-color);
-        }
-
-        /* CONTENEDOR DE BÚSQUEDA */
-        .search-hero {
-            padding: 60px 20px 40px 20px;
-            text-align: center;
-            max-width: 800px;
-            margin: 0 auto;
-            width: 100%;
-        }
-
-        .search-hero h1 {
-            font-size: 36px;
-            font-weight: 800;
-            margin-bottom: 24px;
-            letter-spacing: -1px;
-        }
-
-        /* BARRA DE BÚSQUEDA CORE */
-        .search-box-wrapper {
-            display: flex;
-            background: white;
-            border: 1px solid #cccccc;
-            border-radius: 8px;
-            padding: 6px 12px;
-            align-items: center;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.03);
-            max-width: 600px;
-            margin: 0 auto 30px auto;
-        }
-
-        .search-box-wrapper i {
-            color: var(--text-muted);
-            font-size: 18px;
-            margin-right: 10px;
-        }
-
-        .search-box-wrapper input {
-            flex-grow: 1;
-            border: none;
-            outline: none;
-            font-size: 16px;
-            padding: 10px 0;
-            color: var(--text-dark);
-        }
-
-        .btn-search-go {
-            background-color: var(--accent-sites);
-            color: white;
-            border: none;
-            padding: 10px 24px;
-            border-radius: 6px;
-            font-weight: 600;
-            font-size: 15px;
-            cursor: pointer;
-            transition: background 0.2s;
-        }
-
-        .btn-search-go:hover {
-            background-color: var(--accent-hover);
-        }
-
-        /* ACCESOS RÁPIDOS */
-        .category-chips {
-            display: flex;
-            justify-content: center;
-            gap: 12px;
-            flex-wrap: wrap;
-            margin-bottom: 40px;
-        }
-
-        .chip {
-            background-color: white;
-            border: 1px solid var(--border-soft);
-            padding: 10px 20px;
-            border-radius: 20px;
-            font-size: 14px;
-            font-weight: 500;
-            color: var(--text-dark);
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            transition: all 0.2s;
-        }
-
-        .chip:hover {
-            border-color: var(--accent-sites);
-            color: var(--accent-sites);
-            transform: translateY(-2px);
-        }
-
-        /* SECCIÓN INFERIOR */
-        .main-content {
-            background-color: var(--bg-dark);
-            color: white;
-            padding: 60px 40px;
-            flex-grow: 1;
-            width: 100%;
-        }
-
-        .section-wrapper {
-            max-width: 1200px;
-            margin: 0 auto;
-        }
-
-        .section-title {
-            font-size: 22px;
-            font-weight: 700;
-            margin-bottom: 24px;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-        .grid-places {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-            gap: 24px;
-        }
-
-        /* TARJETAS */
-        .place-card {
-            background-color: #2b2d31;
-            border: 1px solid rgba(255,255,255,0.05);
-            border-radius: 12px;
-            padding: 24px;
-            cursor: pointer;
-            transition: transform 0.2s, border-color 0.2s;
-            display: flex;
-            flex-direction: column;
-            justify-content: space-between;
-            height: 180px;
-        }
-
-        .place-card:hover {
-            transform: translateY(-5px);
-            border-color: var(--accent-sites);
-        }
-
-        .place-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: flex-start;
-        }
-
-        .place-icon {
-            width: 40px;
-            height: 40px;
-            background-color: rgba(0, 128, 128, 0.2);
-            border-radius: 8px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: #00cccc;
-            font-size: 18px;
-        }
-
-        .place-distance {
-            font-size: 12px;
-            color: #9aa0a6;
-            background-color: rgba(255,255,255,0.05);
-            padding: 4px 8px;
-            border-radius: 12px;
-        }
-
-        .place-info h3 {
-            font-size: 16px;
-            font-weight: 700;
-            margin-bottom: 4px;
-            color: white;
-        }
-
-        .place-info p {
-            font-size: 13px;
-            color: #9aa0a6;
-        }
-
-        /* MODAL SELECTOR INTERACTIVO */
-        .modal-overlay {
-            position: fixed;
-            top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0, 0, 0, 0.6);
-            backdrop-filter: blur(4px);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            z-index: 1000;
-            opacity: 0; pointer-events: none;
-            transition: opacity 0.2s ease;
-        }
-
-        .modal-overlay.active {
-            opacity: 1; pointer-events: auto;
-        }
-
-        .modal-box {
-            background: var(--bg-card);
-            border-radius: 12px;
-            width: 100%;
-            max-width: 460px;
-            padding: 28px;
-            box-shadow: 0 20px 40px rgba(0,0,0,0.15);
-            border: 1px solid var(--border-soft);
-        }
-
-        .modal-box h2 {
-            font-size: 20px;
-            font-weight: 700;
-            margin-bottom: 16px;
-            color: var(--text-dark);
-        }
-
-        .modal-options-list {
-            list-style: none;
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-        }
-
-        .modal-option-item {
-            padding: 12px 16px;
-            background: var(--bg-light);
-            border: 1px solid var(--border-soft);
-            border-radius: 8px;
-            cursor: pointer;
-            font-size: 14px;
-            font-weight: 600;
-            color: #333;
-            transition: all 0.15s;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-
-        .modal-option-item:hover {
-            border-color: var(--accent-sites);
-            background: rgba(0, 128, 128, 0.04);
-            color: var(--accent-sites);
-        }
-
-        .btn-close-modal {
-            margin-top: 20px;
-            background: none;
-            border: none;
-            color: var(--text-muted);
-            font-size: 13px;
-            font-weight: 500;
-            cursor: pointer;
-            text-decoration: underline;
-        }
+        :root { --accent: #008080; --bg: #faf9f6; }
+        body { font-family: 'Inter', sans-serif; background: var(--bg); margin: 0; }
+        .nav { padding: 20px 40px; background: white; border-bottom: 1px solid #eee; display: flex; justify-content: space-between; }
+        .container { max-width: 900px; margin: 40px auto; padding: 20px; }
+        #search-input { width: 100%; padding: 15px; border-radius: 10px; border: 1px solid #ccc; font-size: 16px; margin-bottom: 20px; }
+        .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 20px; }
+        .card { background: white; padding: 20px; border-radius: 12px; cursor: pointer; transition: 0.3s; border: 1px solid #eee; }
+        .card:hover { transform: translateY(-5px); box-shadow: 0 10px 20px rgba(0,0,0,0.1); }
+        .type-tag { font-size: 10px; text-transform: uppercase; color: var(--accent); font-weight: 800; }
     </style>
 </head>
 <body>
-
-    <div id="loading-route">
-        <div class="spinner"></div>
-    </div>
-
-    <header class="navbar">
-        <a href="home.html" class="brand">
-            <i class="fa-solid fa-map-location-dot"></i> TheSites
-        </a>
-
-        <div class="user-menu-container">
-            <div class="user-profile-btn" id="profile-toggle-btn">
-                <div class="avatar" id="user-initial">U</div>
-                <span style="font-size: 14px; font-weight: 600;" id="user-display-email">Mi Cuenta</span>
-                <i class="fa-solid fa-chevron-down" style="font-size: 11px; color: var(--text-muted);"></i>
-            </div>
-
-            <div class="settings-dropdown" id="settings-menu">
-                <div class="dropdown-header">Configuración</div>
-                
-                <a href="resetpassword.html" class="dropdown-item">
-                    <i class="fa-solid fa-key" style="color: #888;"></i> Cambiar contraseña
-                </a>
-                
-                <button class="dropdown-item danger" id="btn-delete-account">
-                    <i class="fa-solid fa-user-xmark"></i> Eliminar cuenta
-                </button>
-                
-                <div class="dropdown-header" style="border-top: 1px solid var(--border-soft);">Sesión</div>
-                <button class="dropdown-item" id="btn-logout-action">
-                    <i class="fa-solid fa-arrow-right-from-bracket" style="color: #888;"></i> Cerrar Sesión
-                </button>
-            </div>
-        </div>
+    <header class="nav">
+        <h2>TheSites</h2>
+        <button id="logout">Cerrar Sesión</button>
     </header>
 
-    <main class="search-hero">
-        <h1>¿Qué lugar deseas explorar hoy?</h1>
-        
-        <div class="search-box-wrapper">
-            <i class="fa-solid fa-magnifying-glass"></i>
-            <input type="text" id="main-search" placeholder="Buscar colegios, restaurantes, tiendas..." onkeydown="checkEnter(event)">
-            <button class="btn-search-go" onclick="ejecutarBusquedaInteligente()">Buscar</button>
-        </div>
-
-        <div class="category-chips">
-            <div class="chip" onclick="filtrarCategoria('school')">
-                <i class="fa-solid fa-school"></i> Colegios
-            </div>
-            <div class="chip" onclick="filtrarCategoria('restaurant')">
-                <i class="fa-solid fa-utensils"></i> Restaurantes
-            </div>
-        </div>
-    </main>
-
-    <section class="main-content">
-        <div class="section-wrapper">
-            <div class="section-title">
-                <i class="fa-solid fa-location-dot" style="color: var(--accent-sites);"></i>
-                <span>Lugares Destacados a tu Alrededor</span>
-            </div>
-
-            <div class="grid-places" id="places-grid">
-                <div class="place-card" onclick="navigateLocation('school', 'sch_andres_bello')">
-                    <div class="place-header">
-                        <div class="place-icon"><i class="fa-solid fa-school"></i></div>
-                        <span class="place-distance">A 400m</span>
-                    </div>
-                    <div class="place-info">
-                        <h3>Colegio Andrés Bello</h3>
-                        <p>Chiguayante • Excelencia académica e infraestructura premium.</p>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <div class="modal-overlay" id="search-modal">
-        <div class="modal-box">
-            <h2 id="modal-title">¿A qué colegio deseas ir?</h2>
-            <ul class="modal-options-list" id="modal-options-container"></ul>
-            <button class="btn-close-modal" onclick="cerrarModal()">Cancelar búsqueda</button>
-        </div>
+    <div class="container">
+        <input type="text" id="search-input" placeholder="¿Qué lugar buscas? (Ej: Sanatorio, Colegio, Farmacia...)">
+        <div class="grid" id="results-grid"></div>
     </div>
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-        import { getAuth, onAuthStateChanged, signOut, deleteUser } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+        import { getAuth, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
 
         const firebaseConfig = {
             apiKey: "AIzaSyB0XnYCA-jVNsGowSeXpEb4OwUnQZLOitk",
@@ -523,154 +40,39 @@
             appId: "1:372232227026:web:77d458d036066ff024450b",
             measurementId: "G-YL2GDDMJSP"
         };
+        initializeApp(firebaseConfig);
+        const auth = getAuth();
 
-        const app = initializeApp(firebaseConfig);
-        const auth = getAuth(app);
-
-        // Seguridad de Ruta: Verificar sesión
-        onAuthStateChanged(auth, (user) => {
-            if (!user) {
-                window.location.href = "login.html";
-            } else {
-                document.getElementById('loading-route').style.display = 'none';
-                if(user.email) {
-                    document.getElementById('user-display-email').innerText = user.email.split('@')[0];
-                    document.getElementById('user-initial').innerText = user.email.charAt(0).toUpperCase();
-                }
-            }
-        });
-
-        // Toggle del Menú Desplegable
-        const profileBtn = document.getElementById('profile-toggle-btn');
-        const settingsMenu = document.getElementById('settings-menu');
-
-        profileBtn.addEventListener('click', (e) => {
-            e.stopPropagation();
-            settingsMenu.classList.toggle('active');
-        });
-
-        document.addEventListener('click', () => {
-            settingsMenu.classList.remove('active');
-        });
-
-        // Acción: Cerrar Sesión
-        document.getElementById('btn-logout-action').addEventListener('click', () => {
-            signOut(auth).then(() => {
-                window.location.href = "login.html";
-            });
-        });
-
-        // Acción Crítica: Eliminar Cuenta
-        document.getElementById('btn-delete-account').addEventListener('click', async () => {
-            const confirmar = confirm("¿Estás absolutamente seguro de que deseas eliminar tu cuenta de TheSites? Esta acción es irreversible.");
-            if (confirmar) {
-                const usuarioActual = auth.currentUser;
-                if (usuarioActual) {
-                    try {
-                        await deleteUser(usuarioActual);
-                        alert("Cuenta eliminada con éxito.");
-                        window.location.href = "register.html";
-                    } catch (error) {
-                        if (error.code === 'auth/requires-recent-login') {
-                            alert("Por motivos de seguridad, esta acción requiere un inicio de sesión reciente. Por favor, cierra sesión e ingresa de nuevo antes de proceder.");
-                        } else {
-                            alert("Error al intentar eliminar la cuenta: " + error.message);
-                        }
-                    }
-                }
-            }
-        });
-    </script>
-
-    <script>
+        // Base de datos de conexión (Idéntica a la de location.html)
         const baseDatosLugares = [
-            { id: "sch_andres_bello", nombre: "Colegio Andrés Bello", comuna: "Chiguayante", type: "school", keywords: ["colegio", "andres", "bello"] },
-            { id: "sch_andres_bello_conco", nombre: "Colegio Andrés Bello", comuna: "Concepción", type: "school", keywords: ["colegio", "andres", "bello"] },
-            { id: "res_1102", nombre: "Burger & Co.", comuna: "Chiguayante", type: "restaurant", keywords: ["burger", "hamburguesa", "co"] }
+            { id: "sch_andres_bello", nombre: "Colegio Andrés Bello", comuna: "Chiguayante", type: "school", keywords: ["colegio", "andres", "bello", "chiguayante"] },
+            { id: "sanatorio_aleman", nombre: "Sanatorio Alemán", comuna: "Concepción", type: "health", keywords: ["sanatorio", "aleman", "clinica", "medico"] },
+            { id: "farmacia_colo_colo", nombre: "Farmacia Colo-Colo (Chilena)", comuna: "Concepción", type: "service", keywords: ["farmacia", "chilena", "colo", "colo", "medicamentos"] },
+            { id: "open_pinares", nombre: "Open Pinares", comuna: "Chiguayante", type: "service", keywords: ["open", "pinares", "comercial", "gastronomia"] }
         ];
 
-        function calcularDistanciaLevenshtein(str1, str2) {
-            const track = Array(str2.length + 1).fill(null).map(() => Array(str1.length + 1).fill(null));
-            for (let i = 0; i <= str1.length; i += 1) track[0][i] = i;
-            for (let j = 0; j <= str2.length; j += 1) track[j][0] = j;
-            for (let j = 1; j <= str2.length; j += 1) {
-                for (let i = 1; i <= str1.length; i += 1) {
-                    const indicator = str1[i - 1] === str2[j - 1] ? 0 : 1;
-                    track[j][i] = Math.min(
-                        track[j][i - 1] + 1,
-                        track[j - 1][i] + 1,
-                        track[j - 1][i - 1] + indicator
-                    );
-                }
-            }
-            return track[str2.length][str1.length];
-        }
+        function render(filter = "") {
+            const grid = document.getElementById('results-grid');
+            grid.innerHTML = "";
+            const filtered = baseDatosLugares.filter(l => 
+                l.nombre.toLowerCase().includes(filter.toLowerCase()) || 
+                l.keywords.some(k => k.includes(filter.toLowerCase()))
+            );
 
-        function limpiarTexto(texto) {
-            return texto.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").trim();
-        }
-
-        function navigateLocation(type, id) {
-            window.location.href = `location.html?type=${type}&id=${id}`;
-        }
-
-        function ejecutarBusquedaInteligente() {
-            const campoInput = document.getElementById('main-search').value;
-            const queryLimpia = limpiarTexto(campoInput);
-            if (queryLimpia === "") return;
-
-            const palabrasUsuario = queryLimpia.split(/\s+/);
-            let mejoresCoincidencias = [];
-
-            baseDatosLugares.forEach(lugar => {
-                let puntuacionMatch = 0;
-                palabrasUsuario.forEach(palabraU => {
-                    lugar.keywords.forEach(keyword => {
-                        const distancia = calcularDistanciaLevenshtein(palabraU, keyword);
-                        if (distancia <= 2) puntuacionMatch++;
-                    });
-                });
-                if (puntuacionMatch >= 2 || (palabrasUsuario.length === 1 && puntuacionMatch >= 1)) {
-                    mejoresCoincidencias.push(lugar);
-                }
+            filtered.forEach(l => {
+                const card = document.createElement('div');
+                card.className = 'card';
+                card.innerHTML = `<span class="type-tag">${l.type}</span><h3>${l.nombre}</h3><p>${l.comuna}</p>`;
+                card.onclick = () => window.location.href = `location.html?type=${l.type}&id=${l.id}`;
+                grid.appendChild(card);
             });
-
-            if (mejoresCoincidencias.length === 1) {
-                navigateLocation(mejoresCoincidencias[0].type, mejoresCoincidencias[0].id);
-            } else if (mejoresCoincidencias.length > 1) {
-                abrirSelectorComunidades(mejoresCoincidencias);
-            } else {
-                alert("No se encontraron resultados aproximados.");
-            }
         }
 
-        function abrirSelectorComunidades(coincidencias) {
-            const modal = document.getElementById('search-modal');
-            const container = document.getElementById('modal-options-container');
-            container.innerHTML = "";
-            
-            coincidencias.forEach(lugar => {
-                const li = document.createElement('li');
-                li.className = 'modal-option-item';
-                li.innerHTML = `<i class="fa-solid fa-graduation-cap" style="color: var(--accent-sites);"></i> * ${lugar.nombre} (${lugar.comuna})`;
-                li.onclick = function() { navigateLocation(lugar.type, lugar.id); };
-                container.appendChild(li);
-            });
-            modal.classList.add('active');
-        }
-
-        function cerrarModal() {
-            document.getElementById('search-modal').classList.remove('active');
-        }
-
-        function checkEnter(event) {
-            if (event.key === 'Enter') ejecutarBusquedaInteligente();
-        }
-
-        function filtrarCategoria(type) {
-            const filtrados = baseDatosLugares.filter(l => l.type === type);
-            if(filtrados.length > 0) abrirSelectorComunidades(filtrados);
-        }
+        document.getElementById('search-input').oninput = (e) => render(e.target.value);
+        document.getElementById('logout').onclick = () => signOut(auth).then(() => window.location.href="login.html");
+        
+        onAuthStateChanged(auth, (user) => { if (!user) window.location.href = "login.html"; });
+        render(); // Render inicial
     </script>
 </body>
 </html>
