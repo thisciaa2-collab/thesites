@@ -1,0 +1,352 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TheSites | Detalle de Ubicación</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+
+        :root {
+            --bg-light: #faf9f6;       /* Fondo crema característico */
+            --bg-card: #ffffff;
+            --bg-dark: #1e1f22;        /* Sección inferior oscura */
+            --text-dark: #121212;
+            --text-muted: #65676b;
+            --accent-sites: #008080;   /* Verde Teal */
+            --accent-hover: #006666;
+            --border-soft: rgba(0, 0, 0, 0.08);
+            --bg-pill: #2b2d31;        /* Color píldoras sección oscura */
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-light);
+            color: var(--text-dark);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* NAVBAR SINCRONIZADO */
+        .navbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 40px;
+            background-color: var(--bg-light);
+            border-bottom: 1px solid var(--border-soft);
+        }
+
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            text-decoration: none;
+            color: var(--accent-sites);
+            font-weight: 800;
+            font-size: 24px;
+            letter-spacing: -0.5px;
+        }
+
+        .btn-back {
+            text-decoration: none;
+            color: var(--text-dark);
+            font-size: 14px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            transition: color 0.2s;
+        }
+
+        .btn-back:hover {
+            color: var(--accent-sites);
+        }
+
+        /* CABECERA DE LA UBICACIÓN (LIGHT) */
+        .profile-header {
+            max-width: 1200px;
+            width: 100%;
+            margin: 40px auto;
+            padding: 0 40px;
+            display: flex;
+            gap: 32px;
+            align-items: center;
+        }
+
+        .logo-container {
+            width: 130px;
+            height: 130px;
+            background: white;
+            border: 1px solid var(--border-soft);
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.02);
+        }
+
+        .logo-container img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            padding: 10px;
+        }
+
+        .info-header {
+            flex-grow: 1;
+        }
+
+        .category-badges {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 12px;
+            flex-wrap: wrap;
+        }
+
+        .badge {
+            background-color: rgba(0, 128, 128, 0.08);
+            color: var(--accent-sites);
+            font-size: 12px;
+            font-weight: 600;
+            padding: 6px 14px;
+            border-radius: 20px;
+            border: 1px solid rgba(0, 128, 128, 0.15);
+        }
+
+        .info-header h1 {
+            font-size: 36px;
+            font-weight: 800;
+            letter-spacing: -1px;
+            margin-bottom: 12px;
+            color: #1e1e24;
+        }
+
+        /* METADATA FILA */
+        .meta-grid {
+            display: flex;
+            gap: 24px;
+            flex-wrap: wrap;
+            font-size: 14px;
+            color: var(--text-muted);
+        }
+
+        .meta-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .meta-item i {
+            color: var(--accent-sites);
+        }
+
+        /* SECCIÓN INFERIOR COMPLETA (DARK) */
+        .details-section {
+            background-color: var(--bg-dark);
+            color: white;
+            padding: 60px 40px;
+            flex-grow: 1;
+            width: 100%;
+        }
+
+        .details-wrapper {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            flex-direction: column;
+            gap: 40px;
+        }
+
+        /* BLOQUES DE DATOS ESTRUCTURADOS */
+        .data-block {
+            border-top: 1px solid rgba(255, 255, 255, 0.06);
+            padding-top: 24px;
+        }
+
+        .data-block:first-child {
+            border-top: none;
+            padding-top: 0;
+        }
+
+        .data-block h2 {
+            font-size: 20px;
+            font-weight: 700;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: #ffffff;
+        }
+
+        .data-block h2 i {
+            color: #00cccc;
+        }
+
+        /* DISEÑO DE GRILLA DE CHIPS EN SECCIÓN OSCURA */
+        .chips-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+            gap: 12px;
+        }
+
+        .info-pill {
+            background-color: var(--bg-pill);
+            border: 1px solid rgba(255, 255, 255, 0.04);
+            padding: 14px 18px;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            color: #e2e8f0;
+            transition: border-color 0.2s;
+        }
+
+        .info-pill:hover {
+            border-color: var(--accent-sites);
+        }
+
+        .info-pill i {
+            color: var(--accent-sites);
+            font-size: 14px;
+            width: 16px;
+            text-align: center;
+        }
+
+        @media (max-width: 768px) {
+            .profile-header {
+                flex-direction: column;
+                text-align: center;
+                align-items: center;
+                padding: 0 20px;
+            }
+            .meta-grid {
+                justify-content: center;
+            }
+            .category-badges {
+                justify-content: center;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <header class="navbar">
+        <a href="home.html" class="brand">
+            <i class="fa-solid fa-map-location-dot"></i> TheSites
+        </a>
+        <a href="home.html" class="btn-back">
+            <i class="fa-solid fa-arrow-left"></i> Volver al buscador
+        </a>
+    </header>
+
+    <main class="profile-header">
+        <div class="logo-container">
+            <img id="site-logo" src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTEClsxIBtWjPWYIEcW-1euBgubcn_-Dg7rkg&s" alt="Logo de la Institución">
+        </div>
+        <div class="info-header">
+            <div class="category-badges" id="site-badges">
+                <span class="badge">Mejores colegios de Chiguayante</span>
+                <span class="badge">Clasificado a mejor colegio penquista</span>
+            </div>
+            <h1 id="site-name">Colegio Andrés Bello</h1>
+            
+            <div class="meta-grid">
+                <div class="meta-item">
+                    <i class="fa-solid fa-phone"></i>
+                    <span id="site-phone">(41) 235 0392 (Normal)</span>
+                </div>
+                <div class="meta-item">
+                    <i class="fa-solid fa-calendar-days"></i>
+                    <span id="site-foundation">Fundación: 11 de febrero de 1981</span>
+                </div>
+                <div class="meta-item">
+                    <i class="fa-solid fa-users"></i>
+                    <span id="site-students">1384 Estudiantes (2026)</span>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <section class="details-section">
+        <div class="details-wrapper">
+            
+            <div class="data-block">
+                <h2><i class="fa-solid fa-building-shield"></i> Infraestructura del Establecimiento</h2>
+                <div class="chips-grid" id="infra-container">
+                    </div>
+            </div>
+
+            <div class="data-block">
+                <h2><i class="fa-solid fa-handshake-angle"></i> Equipo de Apoyo y Especialistas</h2>
+                <div class="chips-grid" id="ayuda-container">
+                    </div>
+            </div>
+
+            <div class="data-block">
+                <h2><i class="fa-solid fa-medal"></i> Deportes y Actividades Extracurriculares</h2>
+                <div class="chips-grid" id="deportes-container">
+                    </div>
+            </div>
+
+        </div>
+    </section>
+
+    <script>
+        // Arreglos de información provistos de forma explícita
+        const infraestructura = [
+            "Laboratorio de Computación", "Biblioteca", "Enfermería", "Cancha techada", 
+            "Cancha de Pasto 1", "Cancha de Pasto 2", "Zona de descanso", "Gimnasio", 
+            "Espacios adaptados a necesidades especiales", "Baños", "Laboratorio de Ciencias"
+        ];
+
+        const ayuda = [
+            "Asistente Social", "Fonoaudiólogo", "Orientador", 
+            "Profesor de Educación Especial/Diferencial", "Psicopedagogo", 
+            "Psicólogo", "Reforzamiento en materias específicas"
+        ];
+
+        const deportes = [
+            "Ajedrez", "Baby Fútbol", "Básquetbol", "Fútbol", 
+            "Gimnasia artística/rítmica", "Gimnasia Deportiva", "Tenis de mesa", "Vóleibol"
+        ];
+
+        // Función para renderizar los datos estructurados dentro de las cajas oscuras
+        function renderPills(array, containerId, iconClass) {
+            const container = document.getElementById(containerId);
+            container.innerHTML = ""; // Limpiar
+            array.forEach(item => {
+                const pill = document.createElement('div');
+                pill.className = 'info-pill';
+                pill.innerHTML = `<i class="${iconClass}"></i> <span>${item}</span>`;
+                container.appendChild(pill);
+            });
+        }
+
+        // Carga inicial al inicializar la ventana
+        window.onload = function() {
+            // Analizar parámetros de URL de forma simulada o real para mantener modularidad
+            const urlParams = new URLSearchParams(window.location.search);
+            const type = urlParams.get('type');
+            
+            // Renderizar colecciones en sus bloques correspondientes
+            renderPills(infraestructura, 'infra-container', 'fa-solid fa-circle-check');
+            renderPills(ayuda, 'ayuda-container', 'fa-solid fa-user-plus');
+            renderPills(deportes, 'deportes-container', 'fa-solid fa-heart-pulse');
+            
+            console.log("Infraestructura y metadata de TheSites mapeada correctamente.");
+        };
+    </script>
+</body>
+</html>
