@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Admin | Nueva Zona</title>
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
+    <style>
+        body { font-family: 'Inter', sans-serif; background: #faf9f6; display: flex; justify-content: center; align-items: center; min-height: 100vh; margin: 0; }
+        .container { background: white; padding: 30px; border-radius: 12px; box-shadow: 0 5px 20px rgba(0,0,0,0.08); width: 100%; max-width: 400px; }
+        input { width: 100%; padding: 12px; margin: 10px 0; border: 1px solid #ccc; border-radius: 6px; box-sizing: border-box; }
+        button { width: 100%; padding: 12px; background: #008080; color: white; border: none; border-radius: 6px; cursor: pointer; font-weight: 600; }
+        h2 { margin-top: 0; color: #121212; }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h2>Añadir Lugar Oficial</h2>
+        <input type="text" id="nombre" placeholder="Nombre del lugar">
+        <input type="text" id="ubicacion" placeholder="Ubicación">
+        <input type="text" id="id" placeholder="ID (ej: sanatorio_aleman)">
+        <button id="save-btn">Enviar a Revisión</button>
+    </div>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+        import { getAnalytics } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-analytics.js";
+
+        // Firebase Configuration
+        const firebaseConfig = {
+            apiKey: "AIzaSyB0XnYCA-jVNsGowSeXpEb4OwUnQZLOitk",
+            authDomain: "thesites2.firebaseapp.com",
+            projectId: "thesites2",
+            storageBucket: "thesites2.firebasestorage.app",
+            messagingSenderId: "372232227026",
+            appId: "1:372232227026:web:77d458d036066ff024450b",
+            measurementId: "G-YL2GDDMJSP"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const analytics = getAnalytics(app);
+
+        // Inicializar EmailJS
+        (function() {
+            emailjs.init({ publicKey: 'service_6vp0i9h' });
+        })();
+
+        const prohibidas = ["pene", "p3ne", "c6lo", "p3n3"];
+
+        document.getElementById('save-btn').onclick = function() {
+            const nombre = document.getElementById('nombre').value;
+            const ubicacion = document.getElementById('ubicacion').value;
+            const id = document.getElementById('id').value;
+
+            // Filtro de seguridad
+            if (prohibidas.some(p => nombre.toLowerCase().includes(p))) {
+                alert("Contenido inapropiado detectado.");
+                return;
+            }
+
+            // Enviar a tu correo vía EmailJS
+            emailjs.send("service_6vp0i9h", "template_dddku6q", {
+                nombre: nombre,
+                ubicacion: ubicacion,
+                id: id,
+                usuario_email: "Admin-Solicitud"
+            }).then(function() {
+                alert("¡Solicitud enviada! Revisaré el lugar y lo agregaré al código.");
+                window.location.href = "home.html";
+            }, function(error) {
+                alert("Error al enviar: " + JSON.stringify(error));
+            });
+        };
+    </script>
+</body>
+</html>
