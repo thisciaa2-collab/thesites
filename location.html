@@ -2,351 +2,127 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>TheSites | Detalle de Ubicación</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
-
-        :root {
-            --bg-light: #faf9f6;       /* Fondo crema característico */
-            --bg-card: #ffffff;
-            --bg-dark: #1e1f22;        /* Sección inferior oscura */
-            --text-dark: #121212;
-            --text-muted: #65676b;
-            --accent-sites: #008080;   /* Verde Teal */
-            --accent-hover: #006666;
-            --border-soft: rgba(0, 0, 0, 0.08);
-            --bg-pill: #2b2d31;        /* Color píldoras sección oscura */
-        }
-
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: 'Inter', sans-serif;
-        }
-
-        body {
-            background-color: var(--bg-light);
-            color: var(--text-dark);
-            min-height: 100vh;
-            display: flex;
-            flex-direction: column;
-        }
-
-        /* NAVBAR SINCRONIZADO */
-        .navbar {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 20px 40px;
-            background-color: var(--bg-light);
-            border-bottom: 1px solid var(--border-soft);
-        }
-
-        .brand {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            text-decoration: none;
-            color: var(--accent-sites);
-            font-weight: 800;
-            font-size: 24px;
-            letter-spacing: -0.5px;
-        }
-
-        .btn-back {
-            text-decoration: none;
-            color: var(--text-dark);
-            font-size: 14px;
-            font-weight: 600;
-            display: flex;
-            align-items: center;
-            gap: 6px;
-            transition: color 0.2s;
-        }
-
-        .btn-back:hover {
-            color: var(--accent-sites);
-        }
-
-        /* CABECERA DE LA UBICACIÓN (LIGHT) */
-        .profile-header {
-            max-width: 1200px;
-            width: 100%;
-            margin: 40px auto;
-            padding: 0 40px;
-            display: flex;
-            gap: 32px;
-            align-items: center;
-        }
-
-        .logo-container {
-            width: 130px;
-            height: 130px;
-            background: white;
-            border: 1px solid var(--border-soft);
-            border-radius: 16px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            overflow: hidden;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.02);
-        }
-
-        .logo-container img {
-            width: 100%;
-            height: 100%;
-            object-fit: contain;
-            padding: 10px;
-        }
-
-        .info-header {
-            flex-grow: 1;
-        }
-
-        .category-badges {
-            display: flex;
-            gap: 8px;
-            margin-bottom: 12px;
-            flex-wrap: wrap;
-        }
-
-        .badge {
-            background-color: rgba(0, 128, 128, 0.08);
-            color: var(--accent-sites);
-            font-size: 12px;
-            font-weight: 600;
-            padding: 6px 14px;
-            border-radius: 20px;
-            border: 1px solid rgba(0, 128, 128, 0.15);
-        }
-
-        .info-header h1 {
-            font-size: 36px;
-            font-weight: 800;
-            letter-spacing: -1px;
-            margin-bottom: 12px;
-            color: #1e1e24;
-        }
-
-        /* METADATA FILA */
-        .meta-grid {
-            display: flex;
-            gap: 24px;
-            flex-wrap: wrap;
-            font-size: 14px;
-            color: var(--text-muted);
-        }
-
-        .meta-item {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-
-        .meta-item i {
-            color: var(--accent-sites);
-        }
-
-        /* SECCIÓN INFERIOR COMPLETA (DARK) */
-        .details-section {
-            background-color: var(--bg-dark);
-            color: white;
-            padding: 60px 40px;
-            flex-grow: 1;
-            width: 100%;
-        }
-
-        .details-wrapper {
-            max-width: 1200px;
-            margin: 0 auto;
-            display: flex;
-            flex-direction: column;
-            gap: 40px;
-        }
-
-        /* BLOQUES DE DATOS ESTRUCTURADOS */
-        .data-block {
-            border-top: 1px solid rgba(255, 255, 255, 0.06);
-            padding-top: 24px;
-        }
-
-        .data-block:first-child {
-            border-top: none;
-            padding-top: 0;
-        }
-
-        .data-block h2 {
-            font-size: 20px;
-            font-weight: 700;
-            margin-bottom: 20px;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            color: #ffffff;
-        }
-
-        .data-block h2 i {
-            color: #00cccc;
-        }
-
-        /* DISEÑO DE GRILLA DE CHIPS EN SECCIÓN OSCURA */
-        .chips-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
-            gap: 12px;
-        }
-
-        .info-pill {
-            background-color: var(--bg-pill);
-            border: 1px solid rgba(255, 255, 255, 0.04);
-            padding: 14px 18px;
-            border-radius: 8px;
-            font-size: 14px;
-            font-weight: 500;
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            color: #e2e8f0;
-            transition: border-color 0.2s;
-        }
-
-        .info-pill:hover {
-            border-color: var(--accent-sites);
-        }
-
-        .info-pill i {
-            color: var(--accent-sites);
-            font-size: 14px;
-            width: 16px;
-            text-align: center;
-        }
-
-        @media (max-width: 768px) {
-            .profile-header {
-                flex-direction: column;
-                text-align: center;
-                align-items: center;
-                padding: 0 20px;
-            }
-            .meta-grid {
-                justify-content: center;
-            }
-            .category-badges {
-                justify-content: center;
-            }
-        }
+        :root { --accent: #008080; --bg: #faf9f6; --text: #121212; }
+        body { font-family: 'Inter', sans-serif; background: var(--bg); margin: 0; color: var(--text); }
+        .navbar { display: flex; justify-content: space-between; align-items:center; padding: 20px 40px; border-bottom: 1px solid #eee; background: white; }
+        .container { max-width: 900px; margin: 40px auto; padding: 20px; }
+        .main-img { width: 100%; height: 400px; object-fit: cover; border-radius: 12px; }
+        .gallery-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(100px, 1fr)); gap: 10px; margin-top: 20px; }
+        .gallery-item { width: 100%; height: 70px; object-fit: cover; border-radius: 6px; cursor: pointer; border: 1px solid #ddd; }
+        .info-card { background: white; padding: 30px; border-radius: 12px; margin-top: 20px; box-shadow: 0 4px 10px rgba(0,0,0,0.05); }
+        .contact-box { background: #f1efe9; padding: 15px; border-radius: 8px; margin-top: 15px; border-left: 4px solid var(--accent); }
     </style>
 </head>
 <body>
-
     <header class="navbar">
-        <a href="home.html" class="brand">
+        <a href="home.html" style="text-decoration:none; color:var(--accent); font-weight:800; font-size:22px;">
             <i class="fa-solid fa-map-location-dot"></i> TheSites
         </a>
-        <a href="home.html" class="btn-back">
-            <i class="fa-solid fa-arrow-left"></i> Volver al buscador
-        </a>
+        <button id="btn-logout" style="cursor:pointer;">Cerrar Sesión</button>
     </header>
 
-    <main class="profile-header">
-        <div class="logo-container">
-            <img id="site-logo" src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTEClsxIBtWjPWYIEcW-1euBgubcn_-Dg7rkg&s" alt="Logo de la Institución">
+    <div class="container" id="content">
+        <h1 id="p-title">Cargando datos...</h1>
+        <p id="p-addr" style="color: #666;"></p>
+        <img id="p-main-img" class="main-img" src="" alt="Imagen Principal">
+        <div class="gallery-grid" id="p-gallery"></div>
+        <div class="info-card">
+            <h2 id="p-sum-title">Resumen</h2>
+            <div id="p-summary" style="line-height: 1.6; margin-bottom: 20px;"></div>
+            <div id="p-contact" class="contact-box" style="display:none;"></div>
         </div>
-        <div class="info-header">
-            <div class="category-badges" id="site-badges">
-                <span class="badge">Mejores colegios de Chiguayante</span>
-                <span class="badge">Clasificado a mejor colegio penquista</span>
-            </div>
-            <h1 id="site-name">Colegio Andrés Bello</h1>
-            
-            <div class="meta-grid">
-                <div class="meta-item">
-                    <i class="fa-solid fa-phone"></i>
-                    <span id="site-phone">(41) 235 0392 (Normal)</span>
-                </div>
-                <div class="meta-item">
-                    <i class="fa-solid fa-calendar-days"></i>
-                    <span id="site-foundation">Fundación: 11 de febrero de 1981</span>
-                </div>
-                <div class="meta-item">
-                    <i class="fa-solid fa-users"></i>
-                    <span id="site-students">1384 Estudiantes (2026)</span>
-                </div>
-            </div>
-        </div>
-    </main>
+    </div>
 
-    <section class="details-section">
-        <div class="details-wrapper">
-            
-            <div class="data-block">
-                <h2><i class="fa-solid fa-building-shield"></i> Infraestructura del Establecimiento</h2>
-                <div class="chips-grid" id="infra-container">
-                    </div>
-            </div>
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+        import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
 
-            <div class="data-block">
-                <h2><i class="fa-solid fa-handshake-angle"></i> Equipo de Apoyo y Especialistas</h2>
-                <div class="chips-grid" id="ayuda-container">
-                    </div>
-            </div>
-
-            <div class="data-block">
-                <h2><i class="fa-solid fa-medal"></i> Deportes y Actividades Extracurriculares</h2>
-                <div class="chips-grid" id="deportes-container">
-                    </div>
-            </div>
-
-        </div>
-    </section>
-
-    <script>
-        // Arreglos de información provistos de forma explícita
-        const infraestructura = [
-            "Laboratorio de Computación", "Biblioteca", "Enfermería", "Cancha techada", 
-            "Cancha de Pasto 1", "Cancha de Pasto 2", "Zona de descanso", "Gimnasio", 
-            "Espacios adaptados a necesidades especiales", "Baños", "Laboratorio de Ciencias"
-        ];
-
-        const ayuda = [
-            "Asistente Social", "Fonoaudiólogo", "Orientador", 
-            "Profesor de Educación Especial/Diferencial", "Psicopedagogo", 
-            "Psicólogo", "Reforzamiento en materias específicas"
-        ];
-
-        const deportes = [
-            "Ajedrez", "Baby Fútbol", "Básquetbol", "Fútbol", 
-            "Gimnasia artística/rítmica", "Gimnasia Deportiva", "Tenis de mesa", "Vóleibol"
-        ];
-
-        // Función para renderizar los datos estructurados dentro de las cajas oscuras
-        function renderPills(array, containerId, iconClass) {
-            const container = document.getElementById(containerId);
-            container.innerHTML = ""; // Limpiar
-            array.forEach(item => {
-                const pill = document.createElement('div');
-                pill.className = 'info-pill';
-                pill.innerHTML = `<i class="${iconClass}"></i> <span>${item}</span>`;
-                container.appendChild(pill);
-            });
-        }
-
-        // Carga inicial al inicializar la ventana
-        window.onload = function() {
-            // Analizar parámetros de URL de forma simulada o real para mantener modularidad
-            const urlParams = new URLSearchParams(window.location.search);
-            const type = urlParams.get('type');
-            
-            // Renderizar colecciones en sus bloques correspondientes
-            renderPills(infraestructura, 'infra-container', 'fa-solid fa-circle-check');
-            renderPills(ayuda, 'ayuda-container', 'fa-solid fa-user-plus');
-            renderPills(deportes, 'deportes-container', 'fa-solid fa-heart-pulse');
-            
-            console.log("Infraestructura y metadata de TheSites mapeada correctamente.");
+        // CONFIGURACIÓN REAL INTEGRADA
+        const firebaseConfig = {
+            apiKey: "AIzaSyB0XnYCA-jVNsGowSeXpEb4OwUnQZLOitk",
+            authDomain: "thesites2.firebaseapp.com",
+            projectId: "thesites2",
+            storageBucket: "thesites2.firebasestorage.app",
+            messagingSenderId: "372232227026",
+            appId: "1:372232227026:web:77d458d036066ff024450b",
+            measurementId: "G-YL2GDDMJSP"
         };
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+
+        // BASE DE DATOS GLOBAL
+        const db = {
+            school: {
+                sch_andres_bello: {
+                    title: "Colegio Andrés Bello",
+                    address: "Pinares 503, Chiguayante, Chile",
+                    photo: "https://media.canal9.cl/2025/05/colegio-andres-bello-768x407.jpg",
+                    gallery: ["https://www.colegioandresbello.cl/wp-content/uploads/2026/03/IMG_8443-2-scaled.jpg", "https://www.colegioandresbello.cl/wp-content/uploads/2025/11/WhatsApp-Image-2025-11-24-at-3.00.31-PM-1.jpeg"],
+                    summary: "Institución educativa con excelencia académica ubicada en Pinares, Chiguayante."
+                }
+            },
+            health: {
+                sanatorio_aleman: {
+                    title: "Sanatorio Alemán",
+                    address: "Pedro de Valdivia 801, Concepción",
+                    photo: "https://assets.diarioconcepcion.cl/2021/09/sanatorio-aleman-e1630962711313-850x500.jpeg",
+                    gallery: ["https://www.sanatorioaleman.cl/csa/site/artic/20220128/imag/foto_0000000120220128175730/CSA-025.jpg", "https://www.sanatorioaleman.cl/csa/site/artic/20220106/imag/foto_0000000220220106213656/img-1.png"],
+                    summary: "La clínica privada más grande del sur de Chile. 125 años de trayectoria regional."
+                }
+            },
+            service: {
+                farmacia_colo_colo: {
+                    title: "Farmacia Colo-Colo (Chilena)",
+                    address: "Colo Colo 682, Concepción",
+                    photo: "https://streetviewpixels-pa.googleapis.com/v1/thumbnail?output=thumbnail&cb_client=lu.gallery.gps&panoid=FJ68DUBZG_Cqhny3M7IqUw&w=461&h=200&thumb=2&yaw=56.291325&pitch=0",
+                    gallery: ["https://streetviewpixels-pa.googleapis.com/v1/thumbnail?output=thumbnail&cb_client=lu.gallery.gps&panoid=FJ68DUBZG_Cqhny3M7IqUw&w=461&h=200&thumb=2&yaw=56.291325&pitch=0"],
+                    summary: "Farmacia tradicional de Concepción.",
+                    contact: "Tel: +56 41 230 9887 | WA: +56 9 7872 0848 | Email: farmaciachilena@gmail.com"
+                },
+                open_pinares: {
+                    title: "Open Pinares",
+                    address: "Av. Manuel Rodríguez 1130, Chiguayante (Entrada Pinares)",
+                    photo: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTwNdaV120b0Wi7ZfYWxU9hX4Y1Hf9lxsoVDw&s",
+                    gallery: ["https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRCbbT3drA4xQuhEB2OgOhcjoGNd4RU7HfS4Q&s", "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT92cBrMZZTTYsh651NmlBX_b3vVBzmNCzNRQ&s"],
+                    summary: "Centro comercial/gastronómico abierto todos los días de 10:00 a 21:30. Puntaje: PedidosYa 4,7/5 | Google 4,4/5.",
+                    contact: "Instagram: @openpinares"
+                }
+            }
+        };
+
+        onAuthStateChanged(auth, (user) => {
+            if (!user) window.location.href = "login.html";
+            else {
+                const params = new URLSearchParams(window.location.search);
+                const item = db[params.get('type')] ? db[params.get('type')][params.get('id')] : null;
+                
+                if (item) {
+                    document.getElementById('p-title').innerText = item.title;
+                    document.getElementById('p-addr').innerText = item.address;
+                    document.getElementById('p-main-img').src = item.photo;
+                    document.getElementById('p-summary').innerText = item.summary;
+                    
+                    const gallery = document.getElementById('p-gallery');
+                    item.gallery.forEach(url => {
+                        const img = document.createElement('img');
+                        img.src = url; img.className = 'gallery-item';
+                        img.onclick = () => document.getElementById('p-main-img').src = url;
+                        gallery.appendChild(img);
+                    });
+
+                    if(item.contact) {
+                        const c = document.getElementById('p-contact');
+                        c.style.display = 'block';
+                        c.innerHTML = `<strong>Info Extra:</strong><br>${item.contact}`;
+                    }
+                }
+            }
+        });
+
+        document.getElementById('btn-logout').onclick = () => signOut(auth).then(() => window.location.href="login.html");
     </script>
 </body>
 </html>
