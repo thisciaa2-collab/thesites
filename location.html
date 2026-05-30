@@ -3,65 +3,48 @@
 <head>
     <meta charset="UTF-8">
     <title>TheSites | Detalle de Ubicación</title>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <style>
-        :root { --accent: #008080; --bg: #faf9f6; --text: #121212; }
-        body { font-family: 'Inter', sans-serif; background: var(--bg); margin: 0; color: var(--text); }
-        .navbar { display: flex; justify-content: space-between; align-items:center; padding: 20px 40px; border-bottom: 1px solid #eee; background: white; }
-        .container { max-width: 900px; margin: 40px auto; padding: 20px; }
-        .main-img { width: 100%; height: 400px; object-fit: cover; border-radius: 12px; }
-        .gallery-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(100px, 1fr)); gap: 10px; margin-top: 20px; }
-        .gallery-item { width: 100%; height: 70px; object-fit: cover; border-radius: 6px; cursor: pointer; border: 1px solid #ddd; }
-        .info-card { background: white; padding: 30px; border-radius: 12px; margin-top: 20px; box-shadow: 0 4px 10px rgba(0,0,0,0.05); }
-        .contact-box { background: #f1efe9; padding: 15px; border-radius: 8px; margin-top: 15px; border-left: 4px solid var(--accent); }
+        :root { --accent: #008080; --dark: #121212; --bg: #faf9f6; }
+        body { font-family: 'Outfit', sans-serif; background: var(--bg); margin: 0; color: var(--dark); }
+        .hero-section { background: white; padding: 60px 20px; border-radius: 0 0 50px 50px; box-shadow: 0 10px 30px rgba(0,0,0,0.05); text-align: center; }
+        .info-container { max-width: 800px; margin: 40px auto; padding: 20px; }
+        .main-img { width: 100%; height: 450px; object-fit: cover; border-radius: 30px; box-shadow: 0 20px 40px rgba(0,0,0,0.15); }
+        .card { background: white; padding: 40px; border-radius: 30px; margin-top: 30px; box-shadow: 0 10px 30px rgba(0,0,0,0.03); }
+        .gallery-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: 15px; margin-top: 20px; }
+        .gallery-item { border-radius: 15px; cursor: pointer; transition: 0.3s; width: 100%; height: 100px; object-fit: cover; }
+        .gallery-item:hover { transform: scale(1.05); }
     </style>
 </head>
 <body>
-    <header class="navbar">
-        <a href="home.html" style="text-decoration:none; color:var(--accent); font-weight:800; font-size:22px;">
-            <i class="fa-solid fa-map-location-dot"></i> TheSites
-        </a>
-        <button id="btn-logout" style="cursor:pointer;">Cerrar Sesión</button>
-    </header>
 
-    <div class="container" id="content">
-        <h1 id="p-title">Cargando datos...</h1>
-        <p id="p-addr" style="color: #666;"></p>
-        <img id="p-main-img" class="main-img" src="" alt="Imagen Principal">
+    <div class="hero-section">
+        <h1 id="p-title" style="font-size: 3rem; margin: 0;">Cargando...</h1>
+        <p id="p-addr" style="color: var(--accent); font-weight: 600; font-size: 1.1rem;"></p>
+    </div>
+
+    <div class="info-container">
+        <img id="p-main-img" class="main-img" src="">
         <div class="gallery-grid" id="p-gallery"></div>
-        <div class="info-card">
-            <h2 id="p-sum-title">Resumen</h2>
-            <div id="p-summary" style="line-height: 1.6; margin-bottom: 20px;"></div>
-            <div id="p-contact" class="contact-box" style="display:none;"></div>
+        
+        <div class="card">
+            <h2 style="margin-top:0;">Información Oficial</h2>
+            <div id="p-summary" style="line-height: 1.8; color: #444;"></div>
         </div>
     </div>
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-        import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
-
-        // CONFIGURACIÓN REAL INTEGRADA
-        const firebaseConfig = {
-            apiKey: "AIzaSyB0XnYCA-jVNsGowSeXpEb4OwUnQZLOitk",
-            authDomain: "thesites2.firebaseapp.com",
-            projectId: "thesites2",
-            storageBucket: "thesites2.firebasestorage.app",
-            messagingSenderId: "372232227026",
-            appId: "1:372232227026:web:77d458d036066ff024450b",
-            measurementId: "G-YL2GDDMJSP"
-        };
-        const app = initializeApp(firebaseConfig);
-        const auth = getAuth(app);
-
-        // BASE DE DATOS GLOBAL
+        
         const db = {
             school: {
                 sch_andres_bello: {
                     title: "Colegio Andrés Bello",
-                    address: "Pinares 503, Chiguayante, Chile",
+                    address: "Pinares 503, Chiguayante",
                     photo: "https://media.canal9.cl/2025/05/colegio-andres-bello-768x407.jpg",
-                    gallery: ["https://www.colegioandresbello.cl/wp-content/uploads/2026/03/IMG_8443-2-scaled.jpg", "https://www.colegioandresbello.cl/wp-content/uploads/2025/11/WhatsApp-Image-2025-11-24-at-3.00.31-PM-1.jpeg"],
-                    summary: "Institución educativa con excelencia académica ubicada en Pinares, Chiguayante."
+                    gallery: ["https://www.colegioandresbello.cl/wp-content/uploads/2026/03/IMG_8443-2-scaled.jpg"],
+                    summary: "Institución educativa con excelencia académica."
                 }
             },
             health: {
@@ -69,60 +52,43 @@
                     title: "Sanatorio Alemán",
                     address: "Pedro de Valdivia 801, Concepción",
                     photo: "https://assets.diarioconcepcion.cl/2021/09/sanatorio-aleman-e1630962711313-850x500.jpeg",
-                    gallery: ["https://www.sanatorioaleman.cl/csa/site/artic/20220128/imag/foto_0000000120220128175730/CSA-025.jpg", "https://www.sanatorioaleman.cl/csa/site/artic/20220106/imag/foto_0000000220220106213656/img-1.png"],
-                    summary: "La clínica privada más grande del sur de Chile. 125 años de trayectoria regional."
+                    gallery: ["https://www.sanatorioaleman.cl/csa/site/artic/20220128/imag/foto_0000000120220128175730/CSA-025.jpg"],
+                    summary: "La clínica privada más grande del sur de Chile."
                 }
             },
             service: {
                 farmacia_colo_colo: {
-                    title: "Farmacia Colo-Colo (Chilena)",
+                    title: "Farmacia Colo-Colo",
                     address: "Colo Colo 682, Concepción",
                     photo: "https://streetviewpixels-pa.googleapis.com/v1/thumbnail?output=thumbnail&cb_client=lu.gallery.gps&panoid=FJ68DUBZG_Cqhny3M7IqUw&w=461&h=200&thumb=2&yaw=56.291325&pitch=0",
                     gallery: ["https://streetviewpixels-pa.googleapis.com/v1/thumbnail?output=thumbnail&cb_client=lu.gallery.gps&panoid=FJ68DUBZG_Cqhny3M7IqUw&w=461&h=200&thumb=2&yaw=56.291325&pitch=0"],
-                    summary: "Farmacia tradicional de Concepción.",
-                    contact: "Tel: +56 41 230 9887 | WA: +56 9 7872 0848 | Email: farmaciachilena@gmail.com"
+                    summary: "Atención farmacéutica personalizada. Tel: +56 41 230 9887 | WhatsApp: +56 9 7872 0848"
                 },
                 open_pinares: {
                     title: "Open Pinares",
-                    address: "Av. Manuel Rodríguez 1130, Chiguayante (Entrada Pinares)",
+                    address: "Av. Manuel Rodríguez 1130, Chiguayante",
                     photo: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTwNdaV120b0Wi7ZfYWxU9hX4Y1Hf9lxsoVDw&s",
                     gallery: ["https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRCbbT3drA4xQuhEB2OgOhcjoGNd4RU7HfS4Q&s", "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT92cBrMZZTTYsh651NmlBX_b3vVBzmNCzNRQ&s"],
-                    summary: "Centro comercial/gastronómico abierto todos los días de 10:00 a 21:30. Puntaje: PedidosYa 4,7/5 | Google 4,4/5.",
-                    contact: "Instagram: @openpinares"
+                    summary: "Centro abierto todos los días 10:00-21:30. PedidosYa: 4.7/5 | Maps: 4.4/5."
                 }
             }
         };
 
-        onAuthStateChanged(auth, (user) => {
-            if (!user) window.location.href = "login.html";
-            else {
-                const params = new URLSearchParams(window.location.search);
-                const item = db[params.get('type')] ? db[params.get('type')][params.get('id')] : null;
-                
-                if (item) {
-                    document.getElementById('p-title').innerText = item.title;
-                    document.getElementById('p-addr').innerText = item.address;
-                    document.getElementById('p-main-img').src = item.photo;
-                    document.getElementById('p-summary').innerText = item.summary;
-                    
-                    const gallery = document.getElementById('p-gallery');
-                    item.gallery.forEach(url => {
-                        const img = document.createElement('img');
-                        img.src = url; img.className = 'gallery-item';
-                        img.onclick = () => document.getElementById('p-main-img').src = url;
-                        gallery.appendChild(img);
-                    });
+        const params = new URLSearchParams(window.location.search);
+        const item = db[params.get('type')] ? db[params.get('type')][params.get('id')] : null;
 
-                    if(item.contact) {
-                        const c = document.getElementById('p-contact');
-                        c.style.display = 'block';
-                        c.innerHTML = `<strong>Info Extra:</strong><br>${item.contact}`;
-                    }
-                }
-            }
-        });
-
-        document.getElementById('btn-logout').onclick = () => signOut(auth).then(() => window.location.href="login.html");
+        if (item) {
+            document.getElementById('p-title').innerText = item.title;
+            document.getElementById('p-addr').innerText = item.address;
+            document.getElementById('p-main-img').src = item.photo;
+            document.getElementById('p-summary').innerText = item.summary;
+            item.gallery.forEach(imgUrl => {
+                const img = document.createElement('img');
+                img.src = imgUrl; img.className = 'gallery-item';
+                img.onclick = () => document.getElementById('p-main-img').src = imgUrl;
+                document.getElementById('p-gallery').appendChild(img);
+            });
+        }
     </script>
 </body>
 </html>
