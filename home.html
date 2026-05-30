@@ -3,13 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>TheSites | Panel de Búsqueda</title>
+    <title>TheSites | Panel de Búsqueda Inteligente</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
 
         :root {
-            --bg-light: #faf9f6;       /* El tono crema característico */
+            --bg-light: #faf9f6;       /* Fondo crema característico */
             --bg-card: #ffffff;
             --bg-dark: #1e1f22;        /* Sección inferior */
             --text-dark: #121212;
@@ -250,6 +250,80 @@
             font-size: 13px;
             color: #9aa0a6;
         }
+
+        /* INTERFAZ DEL MODAL JAVASCRIPT SELECTOR (MULTIPLE MATCHES) */
+        .modal-overlay {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0, 0, 0, 0.6);
+            backdrop-filter: blur(4px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            opacity: 0; pointer-events: none;
+            transition: opacity 0.2s ease;
+        }
+
+        .modal-overlay.active {
+            opacity: 1; pointer-events: auto;
+        }
+
+        .modal-box {
+            background: var(--bg-card);
+            border-radius: 12px;
+            width: 100%;
+            max-width: 460px;
+            padding: 28px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.15);
+            border: 1px solid var(--border-soft);
+        }
+
+        .modal-box h2 {
+            font-size: 20px;
+            font-weight: 700;
+            margin-bottom: 16px;
+            color: var(--text-dark);
+        }
+
+        .modal-options-list {
+            list-style: none;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .modal-option-item {
+            padding: 12px 16px;
+            background: var(--bg-light);
+            border: 1px solid var(--border-soft);
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 600;
+            color: #333;
+            transition: all 0.15s;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .modal-option-item:hover {
+            border-color: var(--accent-sites);
+            background: rgba(0, 128, 128, 0.04);
+            color: var(--accent-sites);
+        }
+
+        .btn-close-modal {
+            margin-top: 20px;
+            background: none;
+            border: none;
+            color: var(--text-muted);
+            font-size: 13px;
+            font-weight: 500;
+            cursor: pointer;
+            text-decoration: underline;
+        }
     </style>
 </head>
 <body>
@@ -270,21 +344,18 @@
         <div class="search-box-wrapper">
             <i class="fa-solid fa-magnifying-glass"></i>
             <input type="text" id="main-search" placeholder="Buscar colegios, restaurantes, tiendas..." onkeydown="checkEnter(event)">
-            <button class="btn-search-go" onclick="ejecutarBusqueda()">Buscar</button>
+            <button class="btn-search-go" onclick="ejecutarBusqueda Inteligente()">Buscar</button>
         </div>
 
         <div class="category-chips">
-            <div class="chip" onclick="navigateLocation('school', 'cat_01')">
-                <i class="fa-solid fa-graduation-cap"></i> Colegios
+            <div class="chip" onclick="filtrarCategoria('school')">
+                <i class="fa-solid fa-school"></i> Colegios
             </div>
-            <div class="chip" onclick="navigateLocation('restaurant', 'cat_02')">
+            <div class="chip" onclick="filtrarCategoria('restaurant')">
                 <i class="fa-solid fa-utensils"></i> Restaurantes
             </div>
-            <div class="chip" onclick="navigateLocation('park', 'cat_03')">
+            <div class="chip" onclick="filtrarCategoria('park')">
                 <i class="fa-solid fa-tree"></i> Parques
-            </div>
-            <div class="chip" onclick="navigateLocation('hospital', 'cat_04')">
-                <i class="fa-solid fa-house-medical"></i> Hospitales
             </div>
         </div>
     </main>
@@ -296,16 +367,15 @@
                 <span>Lugares Destacados a tu Alrededor</span>
             </div>
 
-            <div class="grid-places">
-                
-                <div class="place-card" onclick="navigateLocation('school', 'sch_9921')">
+            <div class="grid-places" id="places-grid">
+                <div class="place-card" onclick="navigateLocation('school', 'sch_andres_bello')">
                     <div class="place-header">
                         <div class="place-icon"><i class="fa-solid fa-school"></i></div>
                         <span class="place-distance">A 400m</span>
                     </div>
                     <div class="place-info">
-                        <h3>Liceo Polivalente Central</h3>
-                        <p>Educación técnica y científica de alto rendimiento.</p>
+                        <h3>Colegio Andrés Bello</h3>
+                        <p>Chiguayante • Excelencia académica e infraestructura premium.</p>
                     </div>
                 </div>
 
@@ -319,60 +389,136 @@
                         <p>Las mejores hamburguesas artesanales de la comuna.</p>
                     </div>
                 </div>
-
-                <div class="place-card" onclick="navigateLocation('park', 'prk_5541')">
-                    <div class="place-header">
-                        <div class="place-icon" style="color: #10b981; background: rgba(16,185,129,0.1);"><i class="fa-solid fa-leaf"></i></div>
-                        <span class="place-distance">A 850m</span>
-                    </div>
-                    <div class="place-info">
-                        <h3>Parque Manuel Rodríguez</h3>
-                        <p>Áreas verdes abiertas, zonas de recreación y deporte.</p>
-                    </div>
-                </div>
-
-                <div class="place-card" onclick="navigateLocation('school', 'sch_0043')">
-                    <div class="place-header">
-                        <div class="place-icon"><i class="fa-solid fa-graduation-cap"></i></div>
-                        <span class="place-distance">A 2.1 km</span>
-                    </div>
-                    <div class="place-info">
-                        <h3>Colegio Británico Norte</h3>
-                        <p>Institución de educación bilingüe básica y media.</p>
-                    </div>
-                </div>
-
             </div>
         </div>
     </section>
 
+    <div class="modal-overlay" id="search-modal">
+        <div class="modal-box">
+            <h2 id="modal-title">¿A qué colegio deseas ir?</h2>
+            <ul class="modal-options-list" id="modal-options-container">
+                </ul>
+            <button class="btn-close-modal" onclick="cerrarModal()">Cancelar búsqueda</button>
+        </div>
+    </div>
+
     <script>
-        // Función maestra para armar la URL exacta requerida
+        // BASE DE DATOS LOCAL DE THESITES PARA EL BUSCADOR
+        const baseDatosLugares = [
+            { id: "sch_andres_bello", nombre: "Colegio Andrés Bello", comuna: "Chiguayante", type: "school", keywords: ["colegio", "andres", "bello"] },
+            { id: "sch_andres_bello_conco", nombre: "Colegio Andrés Bello", comuna: "Concepción", type: "school", keywords: ["colegio", "andres", "bello"] },
+            { id: "res_1102", nombre: "Burger & Co.", comuna: "Chiguayante", type: "restaurant", keywords: ["burger", "hamburguesa", "co"] }
+        ];
+
+        // ALGORITMO DE LEVENSHTEIN (Mide diferencia entre palabras para corregir typos)
+        function calcularDistanciaLevenshtein(str1, str2) {
+            const track = Array(str2.length + 1).fill(null).map(() => Array(str1.length + 1).fill(null));
+            for (let i = 0; i <= str1.length; i += 1) track[0][i] = i;
+            for (let j = 0; j <= str2.length; j += 1) track[j][0] = j;
+            for (let j = 1; j <= str2.length; j += 1) {
+                for (let i = 1; i <= str1.length; i += 1) {
+                    const indicator = str1[i - 1] === str2[j - 1] ? 0 : 1;
+                    track[j][i] = Math.min(
+                        track[j][i - 1] + 1, // Instertar
+                        track[j - 1][i] + 1, // Borrar
+                        track[j - 1][i - 1] + indicator // Sustituir
+                    );
+                }
+            }
+            return track[str2.length][str1.length];
+        }
+
+        // NORMALIZADOR DE TEXTO (Quita acentos y limpia mayúsculas)
+        function limpiarTexto(texto) {
+            return texto.toLowerCase()
+                        .normalize("NFD")
+                        .replace(/[\u0300-\u036f]/g, "")
+                        .trim();
+        }
+
+        // FUNCIÓN MAESTRA DE REDIRECCIÓN
         function navigateLocation(type, id) {
             window.location.href = `location.html?type=${type}&id=${id}`;
         }
 
-        // Ejecutar búsqueda desde el input
-        function ejecutarBusqueda() {
-            const query = document.getElementById('main-search').value.trim().toLowerCase();
-            if(query === "") return;
+        // EJECUTAR BÚSQUEDA CON TOLERANCIA A ERRORES (Ej: "COELGIO ANDRES BELVL")
+        function ejecutarBusquedaInteligente() {
+            const campoInput = document.getElementById('main-search').value;
+            const queryLimpia = limpiarTexto(campoInput);
+            
+            if (queryLimpia === "") return;
 
-            // Lógica inteligente para simular redirección según lo que escriba el usuario
-            if (query.includes('colegio') || query.includes('escuela') || query.includes('school')) {
-                navigateLocation('school', 'search_res');
-            } else if (query.includes('restaurante') || query.includes('comida')) {
-                navigateLocation('restaurant', 'search_res');
-            } else {
-                // Por defecto redirige a un tipo general con la búsqueda
-                navigateLocation('general', 'query_id');
+            const palabrasUsuario = queryLimpia.split(/\s+/);
+            let mejoresCoincidencias = [];
+
+            // Analizar cada lugar en la base de datos
+            baseDatosLugares.forEach(lugar => {
+                let puntuacionMatch = 0;
+
+                // Comparar cada palabra escrita por el usuario contra las palabras clave del sitio
+                palabrasUsuario.forEach(palabraU => {
+                    lugar.keywords.forEach(keyword => {
+                        const distancia = calcularDistanciaLevenshtein(palabraU, keyword);
+                        // Si la palabra es idéntica o tiene un error menor (distancia <= 2), cuenta como acierto
+                        if (distancia <= 2) {
+                            puntuacionMatch++;
+                        }
+                    });
+                });
+
+                // Si emparejó la mayoría de los términos, lo añadimos a posibles candidatos
+                if (puntuacionMatch >= 2 || (palabrasUsuario.length === 1 && puntuacionMatch >= 1)) {
+                    mejoresCoincidencias.push(lugar);
+                }
+            });
+
+            // MANEJO DE RESULTADOS ENCONTRADOS
+            if (mejoresCoincidencias.length === 1) {
+                // Coincidencia única directa -> Redirigir de inmediato
+                navigateLocation(mejoresCoincidencias[0].type, mejoresCoincidencias[0].id);
+            } 
+            else if (mejoresCoincidencias.length > 1) {
+                // Múltiples opciones encontradas -> Desplegar el selector interactivo solicitado
+                abrirSelectorComunidades(mejoresCoincidencias);
+            } 
+            else {
+                alert("No se encontraron resultados exactos. Intenta escribir otra categoría.");
             }
         }
 
-        // Capturar tecla enter en el buscador
+        // DESPLEGAR INTERFAZ JAVASCRIPT: ¿A qué colegio deseas ir?
+        function abrirSelectorComunidades(coincidencias) {
+            const modal = document.getElementById('search-modal');
+            const container = document.getElementById('modal-options-container');
+            
+            container.innerHTML = ""; // Resetear contenedor
+            
+            coincidencias.forEach(lugar => {
+                const li = document.createElement('li');
+                li.className = 'modal-option-item';
+                li.innerHTML = `<i class="fa-solid fa-graduation-cap" style="color: var(--accent-sites);"></i> * ${lugar.nombre} (${lugar.comuna})`;
+                li.onclick = function() {
+                    navigateLocation(lugar.type, lugar.id);
+                };
+                container.appendChild(li);
+            });
+
+            modal.classList.add('active');
+        }
+
+        function cerrarModal() {
+            document.getElementById('search-modal').classList.remove('active');
+        }
+
         function checkEnter(event) {
             if (event.key === 'Enter') {
-                ejecutarBusqueda();
+                ejecutarBusquedaInteligente();
             }
+        }
+
+        function filtrarCategoria(type) {
+            const filtrados = baseDatosLugares.filter(l => l.type === type);
+            if(filtrados.length > 0) abrirSelectorComunidades(filtrados);
         }
     </script>
 </body>
