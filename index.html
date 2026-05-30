@@ -2,440 +2,53 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>TheSites | Descubre lugares cerca de ti</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <title>TheSites | Explora tu Ciudad</title>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&display=swap" rel="stylesheet">
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght=400;500;600;700;800&display=swap');
+        :root { --accent: #008080; --dark: #121212; }
+        body { font-family: 'Outfit', sans-serif; background: #faf9f6; margin: 0; color: var(--dark); }
+        
+        /* Navegación Minimalista */
+        nav { display: flex; justify-content: space-between; padding: 30px 5%; align-items: center; }
+        .logo { font-weight: 800; font-size: 24px; letter-spacing: -1px; color: var(--accent); }
+        
+        /* Hero Section */
+        .hero { padding: 100px 5%; text-align: center; background: radial-gradient(circle at top right, #e0f2f1, transparent); }
+        h1 { font-size: 4.5rem; line-height: 1.1; margin-bottom: 20px; }
+        .btn-main { background: var(--dark); color: white; padding: 18px 40px; border-radius: 50px; text-decoration: none; font-weight: 600; transition: 0.3s; }
+        .btn-main:hover { background: var(--accent); transform: translateY(-3px); }
 
-        :root {
-            --bg-light: #faf9f6;       /* El tono crema de la interfaz */
-            --bg-dark: #1e1f22;        /* El fondo oscuro de la sección inferior */
-            --text-dark: #121212;      
-            --text-muted: #65676b;     
-            --accent-sites: #008080;   /* Verde teal corporativo */
-            --accent-hover: #006666;
-            --border-input: #cccccc;
-        }
-
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: 'Inter', sans-serif;
-        }
-
-        body {
-            background-color: var(--bg-light);
-            color: var(--text-dark);
-            overflow-x: hidden;
-        }
-
-        /* PANTALLA DE CARGA (Evita el parpadeo visual antes de la redirección) */
-        #loading-screen {
-            position: fixed;
-            top: 0; left: 0; width: 100%; height: 100vh;
-            background-color: var(--bg-light);
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            z-index: 9999;
-            color: var(--accent-sites);
-            font-weight: 600;
-            font-size: 16px;
-            gap: 12px;
-        }
-
-        .spinner {
-            width: 40px;
-            height: 40px;
-            border: 4px solid rgba(0, 128, 128, 0.1);
-            border-left-color: var(--accent-sites);
-            border-radius: 50%;
-            animation: spin 0.8s linear infinite;
-        }
-
-        @keyframes spin {
-            to { transform: rotate(360deg); }
-        }
-
-        /* NAVBAR SUPERIOR */
-        .navbar {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 20px 40px;
-            background-color: var(--bg-light);
-            width: 100%;
-            max-width: 1400px;
-            margin: 0 auto;
-        }
-
-        .nav-left, .nav-right {
-            display: flex;
-            align-items: center;
-            gap: 28px;
-        }
-
-        .brand {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            text-decoration: none;
-            color: var(--accent-sites);
-            font-weight: 800;
-            font-size: 24px;
-            letter-spacing: -0.5px;
-        }
-
-        .nav-link {
-            text-decoration: none;
-            color: #222;
-            font-size: 14px;
-            font-weight: 500;
-            transition: color 0.2s;
-        }
-
-        .nav-link:hover {
-            color: var(--accent-sites);
-        }
-
-        .lang-selector {
-            display: flex;
-            align-items: center;
-            gap: 6px;
-            font-size: 14px;
-            cursor: pointer;
-            color: #222;
-        }
-
-        .btn-logout {
-            background-color: transparent;
-            color: #cc3333;
-            border: 1px solid #cc3333;
-            padding: 8px 16px;
-            border-radius: 6px;
-            font-size: 13px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.2s;
-        }
-
-        .btn-logout:hover {
-            background-color: #cc3333;
-            color: white;
-        }
-
-        /* HERO SECCIÓN CON BUSCADOR */
-        .hero-section {
-            text-align: center;
-            padding: 80px 20px 100px 20px;
-            max-width: 900px;
-            margin: 0 auto;
-        }
-
-        .hero-section h1 {
-            font-size: 54px;
-            font-weight: 800;
-            letter-spacing: -1.5px;
-            color: #1e1e24;
-            margin-bottom: 24px;
-            line-height: 1.1;
-        }
-
-        .hero-section p {
-            font-size: 16px;
-            color: var(--text-muted);
-            max-width: 720px;
-            margin: 0 auto 36px auto;
-            line-height: 1.6;
-        }
-
-        .search-wrapper {
-            display: flex;
-            align-items: center;
-            max-width: 580px;
-            margin: 0 auto;
-            gap: 12px;
-        }
-
-        .search-input-box {
-            position: relative;
-            flex-grow: 1;
-            display: flex;
-            align-items: center;
-            background: white;
-            border: 1px solid var(--border-input);
-            border-radius: 6px;
-            padding-left: 16px;
-        }
-
-        .search-input-box i {
-            color: #757575;
-            font-size: 16px;
-            position: absolute;
-        }
-
-        .search-input-box input {
-            width: 100%;
-            border: none;
-            outline: none;
-            padding: 14px 14px 14px 28px;
-            font-size: 15px;
-            color: var(--text-dark);
-            border-radius: 6px;
-        }
-
-        .btn-search {
-            background-color: var(--accent-sites);
-            color: white;
-            border: none;
-            padding: 14px 28px;
-            font-size: 15px;
-            font-weight: 600;
-            border-radius: 6px;
-            cursor: pointer;
-            transition: background-color 0.2s;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-
-        .btn-search:hover {
-            background-color: var(--accent-hover);
-        }
-
-        /* SECCIÓN INFERIOR OSCURA */
-        .dark-showcase {
-            background-color: var(--bg-dark);
-            color: white;
-            padding: 100px 40px;
-            text-align: center;
-            width: 100%;
-        }
-
-        .dark-showcase h2 {
-            font-size: 38px;
-            font-weight: 800;
-            letter-spacing: -1px;
-            margin-bottom: 18px;
-            max-width: 600px;
-            margin-left: auto;
-            margin-right: auto;
-            line-height: 1.2;
-        }
-
-        .dark-showcase p.sub-dark {
-            color: #9aa0a6;
-            font-size: 15px;
-            max-width: 680px;
-            margin: 0 auto 50px auto;
-            line-height: 1.5;
-        }
-
-        .cards-grid {
-            display: flex;
-            justify-content: center;
-            gap: 20px;
-            max-width: 1200px;
-            margin: 0 auto;
-            flex-wrap: wrap;
-        }
-
-        .feature-card {
-            background-color: #2b2d31;
-            border-radius: 8px;
-            padding: 24px;
-            width: 280px;
-            text-align: left;
-            border: 1px solid rgba(255, 255, 255, 0.05);
-        }
-
-        .card-icon {
-            width: 40px;
-            height: 40px;
-            background-color: rgba(0, 128, 128, 0.15);
-            border-radius: 6px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: #00aaaa;
-            font-size: 18px;
-            margin-bottom: 16px;
-        }
-
-        .feature-card h3 {
-            font-size: 16px;
-            font-weight: 700;
-            margin-bottom: 8px;
-            color: #ffffff;
-        }
-
-        .feature-card p {
-            color: #9aa0a6;
-            font-size: 13.5px;
-            line-height: 1.5;
-        }
-
-        .card-meta {
-            margin-top: 12px;
-            font-size: 12px;
-            color: var(--accent-sites);
-            font-weight: 600;
-        }
+        /* Tarjetas de Categoría */
+        .features { display: grid; grid-template-columns: repeat(3, 1fr); gap: 30px; padding: 50px 5%; }
+        .card { background: white; padding: 40px; border-radius: 30px; border: 1px solid #eee; transition: 0.4s; }
+        .card:hover { border-color: var(--accent); box-shadow: 0 20px 40px rgba(0,0,0,0.05); }
     </style>
 </head>
 <body>
+    <nav>
+        <div class="logo">TheSites</div>
+        <a href="login.html" style="font-weight:600; color:inherit;">Iniciar Sesión</a>
+    </nav>
 
-    <div id="loading-screen">
-        <div class="spinner"></div>
-        <span>Verificando credenciales en TheSites...</span>
+    <div class="hero">
+        <h1>Tu ciudad, <br>en un solo lugar.</h1>
+        <p style="font-size: 1.2rem; color: #666; margin-bottom: 40px;">Acceso verificado a los puntos más importantes de Chiguayante y Concepción.</p>
+        <a href="home.html" class="btn-main">Explorar Lugares</a>
     </div>
 
-    <div id="app-container" style="display: none;">
-        
-        <header class="navbar">
-            <div class="nav-left">
-                <a href="home.html" class="brand">
-                    <i class="fa-solid fa-map-location-dot"></i> TheSites
-                </a>
-                <nav class="nav-left" style="gap: 20px;">
-                    <a href="home.html" class="nav-link">Ir al Panel</a>
-                    <a href="#" class="nav-link">Explorar Mapas</a>
-                </nav>
-            </div>
-            
-            <div class="nav-right">
-                <div class="lang-selector">
-                    <i class="fa-solid fa-globe"></i> ES (CL)
-                </div>
-                <button class="btn-logout" id="btn-cerrar-sesion">Cerrar Sesión</button>
-            </div>
-        </header>
-
-        <main class="hero-section">
-            <h1>Buscador de lugares cercanos para ti</h1>
-            <p>Encuentra al instante restaurantes, cafeterías, parques y servicios comerciales a la redonda de tu posición actual. Autoriza tu ubicación para obtener resultados en tiempo real.</p>
-            
-            <div class="search-wrapper">
-                <div class="search-input-box">
-                    <i class="fa-solid fa-location-crosshairs"></i>
-                    <input type="text" id="search-query" placeholder="¿Qué estás buscando? (ej. Cafeterías, Colegios...)">
-                </div>
-                <button class="btn-search" onclick="buscarLugaresCercanos()">
-                    <i class="fa-solid fa-magnifying-glass"></i> Buscar
-                </button>
-            </div>
-        </main>
-
-        <section class="dark-showcase">
-            <h2 id="section-title">TheSites rastrea la infraestructura de tu barrio</h2>
-            <p class="sub-dark" id="section-desc">Activa tu ubicación o escribe una categoría arriba para mapear dinámicamente todos los puntos clave de interés que te rodean.</p>
-            
-            <div class="cards-grid" id="places-container">
-                <div class="feature-card">
-                    <div class="card-icon"><i class="fa-solid fa-utensils"></i></div>
-                    <h3>Gastronomía Local</h3>
-                    <p>Descubre los restaurantes y centros de comida con mejores reseñas a pasos de tu casa.</p>
-                </div>
-                <div class="feature-card">
-                    <div class="card-icon"><i class="fa-solid fa-mug-hot"></i></div>
-                    <h3>Espacios de Café</h3>
-                    <p>Filtra por cafeterías óptimas para trabajo remoto o reuniones casuales rápidamente.</p>
-                </div>
-                <div class="feature-card">
-                    <div class="card-icon"><i class="fa-solid fa-store"></i></div>
-                    <h3>Comercio Cercano</h3>
-                    <p>Encuentra almacenes, farmacias y supermercados abiertos en tu cuadrante actual.</p>
-                </div>
-            </div>
-        </section>
+    <div class="features">
+        <div class="card">
+            <h3>🏫 Educación</h3>
+            <p>Infraestructura escolar de primer nivel, verificada y actualizada.</p>
+        </div>
+        <div class="card">
+            <h3>🏥 Salud</h3>
+            <p>Clínicas y centros de salud con información de contacto directa.</p>
+        </div>
+        <div class="card">
+            <h3>☕ Servicios</h3>
+            <p>Comercios y puntos de interés seleccionados por su calidad.</p>
+        </div>
     </div>
-
-    <script type="module">
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-        import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
-
-        // Tu configuración real e idéntica de Firebase
-        const firebaseConfig = {
-            apiKey: "AIzaSyB0XnYCA-jVNsGowSeXpEb4OwUnQZLOitk",
-            authDomain: "thesites2.firebaseapp.com",
-            projectId: "thesites2",
-            storageBucket: "thesites2.firebasestorage.app",
-            messagingSenderId: "372232227026",
-            appId: "1:372232227026:web:77d458d036066ff024450b",
-            measurementId: "G-YL2GDDMJSP"
-        };
-
-        // Inicializar Firebase
-        const app = initializeApp(firebaseConfig);
-        const auth = getAuth(app);
-
-        const loadingScreen = document.getElementById('loading-screen');
-        const appContainer = document.getElementById('app-container');
-
-        // OBSERVADOR CLAVE: Middleware de redirección automática
-        onAuthStateChanged(auth, (user) => {
-            if (!user) {
-                // Si NO hay sesión activa, redirige inmediatamente a login
-                window.location.href = "login.html";
-            } else {
-                // Si SI hay sesión, destruye la pantalla de carga y expone el index seguro
-                loadingScreen.style.display = "none";
-                appContainer.style.display = "block";
-            }
-        });
-
-        // Evento para desloguearse limpiamente
-        document.getElementById('btn-cerrar-sesion').addEventListener('click', () => {
-            signOut(auth).then(() => {
-                window.location.href = "login.html";
-            });
-        });
-    </script>
-
-    <script>
-        function buscarLugaresCercanos() {
-            const query = document.getElementById('search-query').value.trim();
-            const container = document.getElementById('places-container');
-            
-            if (navigator.geolocation) {
-                document.getElementById('section-title').innerText = "Rastreando tu señal GPS...";
-                
-                navigator.geolocation.getCurrentPosition((position) => {
-                    const lat = position.coords.latitude.toFixed(4);
-                    const lon = position.coords.longitude.toFixed(4);
-                    
-                    document.getElementById('section-title').innerText = "Lugares encontrados cerca de ti";
-                    document.getElementById('section-desc').innerText = `Resultados optimizados para tu cuadrante en Chiguayante (Lat: ${lat}, Lon: ${lon})`;
-                    
-                    const cat = query || "Sitio Verificado";
-                    container.innerHTML = `
-                        <div class="feature-card">
-                            <div class="card-icon"><i class="fa-solid fa-star"></i></div>
-                            <h3>${cat} Central</h3>
-                            <p>El punto más popular valorado por la comunidad de la zona.</p>
-                            <div class="card-meta"><i class="fa-solid fa-walking"></i> A 450 metros</div>
-                        </div>
-                        <div class="feature-card">
-                            <div class="card-icon"><i class="fa-solid fa-location-dot"></i></div>
-                            <h3>${cat} Express</h3>
-                            <p>Ideal para visitas rápidas o retiros inmediatos sin filas largas.</p>
-                            <div class="card-meta"><i class="fa-solid fa-walking"></i> A 1.2 km</div>
-                        </div>
-                        <div class="feature-card">
-                            <div class="card-icon"><i class="fa-solid fa-clock"></i></div>
-                            <h3>${cat} 24/7</h3>
-                            <p>Establecimiento verificado con atención continuada.</p>
-                            <div class="card-meta"><i class="fa-solid fa-car"></i> A 5 min en auto</div>
-                        </div>
-                    `;
-                }, () => {
-                    alert("Por favor permite el acceso GPS para ubicar los comercios.");
-                });
-            }
-        }
-    </script>
 </body>
 </html>
