@@ -6,7 +6,7 @@
     <title>TheSites | Iniciar Sesión</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght=400;500;600;700;800&display=swap');
 
         :root {
             --bg-light: #faf9f6;       /* Fondo crema característico */
@@ -56,7 +56,7 @@
             display: inline-flex;
             align-items: center;
             gap: 8px;
-            margin-bottom: 28px;
+            margin-bottom: 24px;
         }
 
         .auth-container h1 {
@@ -76,7 +76,6 @@
         .form-group {
             text-align: left;
             margin-bottom: 18px;
-            position: relative;
         }
 
         .form-group label {
@@ -130,6 +129,75 @@
 
         .btn-auth-submit:hover {
             background-color: var(--accent-hover);
+        }
+
+        /* DIVIDER */
+        .auth-divider {
+            display: flex;
+            align-items: center;
+            text-align: center;
+            margin: 22px 0;
+            color: var(--text-muted);
+            font-size: 12px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .auth-divider::before, .auth-divider::after {
+            content: '';
+            flex: 1;
+            border-bottom: 1px solid var(--border-soft);
+        }
+
+        .auth-divider:not(:empty)::before { margin-right: .75em; }
+        .auth-divider:not(:empty)::after { margin-left: .75em; }
+
+        /* BOTONES SOCIALES */
+        .social-buttons-grid {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .btn-social {
+            width: 100%;
+            padding: 12px;
+            font-size: 14px;
+            font-weight: 600;
+            border-radius: 6px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            transition: all 0.2s;
+            border: 1px solid #cccccc;
+        }
+
+        .btn-social-google {
+            background-color: #ffffff;
+            color: #3c4043;
+        }
+
+        .btn-social-google:hover {
+            background-color: #f8f9fa;
+            border-color: #b0b4b8;
+        }
+
+        .btn-social-google i {
+            color: #ea4335; /* Color corporativo Google */
+        }
+
+        .btn-social-github {
+            background-color: #24292f;
+            color: #ffffff;
+            border-color: #24292f;
+        }
+
+        .btn-social-github:hover {
+            background-color: #1a1e22;
+            border-color: #1a1e22;
         }
 
         .auth-footer {
@@ -199,6 +267,17 @@
             <button type="submit" class="btn-auth-submit">Iniciar Sesión</button>
         </form>
 
+        <div class="auth-divider">O continuar con</div>
+
+        <div class="social-buttons-grid">
+            <button type="button" class="btn-social btn-social-google" id="btn-google">
+                <i class="fa-brands fa-google"></i> Acceder con Google
+            </button>
+            <button type="button" class="btn-social btn-social-github" id="btn-github">
+                <i class="fa-brands fa-github"></i> Acceder con GitHub
+            </button>
+        </div>
+
         <div class="auth-footer">
             ¿No tienes una cuenta? <a href="register.html">Regístrate aquí</a>
         </div>
@@ -206,9 +285,9 @@
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-        import { getAuth, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+        import { getAuth, signInWithEmailAndPassword, GoogleAuthProvider, GithubAuthProvider, signInWithPopup } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
 
-        // Configuración oficial provista
+        // Configuración oficial del proyecto thesites2
         const firebaseConfig = {
             apiKey: "AIzaSyB0XnYCA-jVNsGowSeXpEb4OwUnQZLOitk",
             authDomain: "thesites2.firebaseapp.com",
@@ -219,35 +298,65 @@
             measurementId: "G-YL2GDDMJSP"
         };
 
-        // Inicializar Firebase e Interface de Auth
         const app = initializeApp(firebaseConfig);
         const auth = getAuth(app);
+
+        // Inicialización de Proveedores
+        const googleProvider = new GoogleAuthProvider();
+        const githubProvider = new GithubAuthProvider();
 
         const loginForm = document.getElementById('login-form');
         const errorBox = document.getElementById('error-box');
         const errorText = document.getElementById('error-text');
 
+        // Manejador de error unificado
+        function mostrarError(mensaje) {
+            errorBox.style.display = 'flex';
+            errorText.innerText = mensaje;
+        }
+
+        // 1. LOGIN TRADICIONAL (EMAIL / PASSWORD)
         loginForm.addEventListener('submit', async (e) => {
             e.preventDefault();
-            errorBox.style.display = 'none'; // Resetear error
+            errorBox.style.display = 'none';
 
             const email = document.getElementById('email').value.trim();
             const password = document.getElementById('password').value;
 
             try {
-                // Autenticación modular nativa
                 await signInWithEmailAndPassword(auth, email, password);
-                // Éxito: Redirigir al panel de búsqueda
                 window.location.href = "home.html";
             } catch (error) {
-                errorBox.style.display = 'flex';
-                // Traducir los errores más comunes de Firebase
                 if (error.code === 'auth/invalid-credential' || error.code === 'auth/wrong-password' || error.code === 'auth/user-not-found') {
-                    errorText.innerText = "El correo o la contraseña son incorrectos.";
-                } else if (error.code === 'auth/invalid-email') {
-                    errorText.innerText = "El formato del correo electrónico no es válido.";
+                    mostrarError("El correo o la contraseña son incorrectos.");
                 } else {
-                    errorText.innerText = "Ocurrió un error inesperado: " + error.message;
+                    mostrarError("Error al iniciar sesión: " + error.message);
+                }
+            }
+        });
+
+        // 2. AUTH CON GOOGLE POPUP
+        document.getElementById('btn-google').addEventListener('click', async () => {
+            errorBox.style.display = 'none';
+            try {
+                await signInWithPopup(auth, googleProvider);
+                window.location.href = "home.html";
+            } catch (error) {
+                if (error.code !== 'auth/popup-closed-by-user') {
+                    mostrarError("Error al conectar con Google: " + error.message);
+                }
+            }
+        });
+
+        // 3. AUTH CON GITHUB POPUP
+        document.getElementById('btn-github').addEventListener('click', async () => {
+            errorBox.style.display = 'none';
+            try {
+                await signInWithPopup(auth, githubProvider);
+                window.location.href = "home.html";
+            } catch (error) {
+                if (error.code !== 'auth/popup-closed-by-user') {
+                    mostrarError("Error al conectar con GitHub: " + error.message);
                 }
             }
         });
