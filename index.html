@@ -6,14 +6,14 @@
     <title>TheSites | Descubre lugares cerca de ti</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght=400;500;600;700;800&display=swap');
 
         :root {
-            --bg-light: #faf9f6;       /* El tono crema/off-white exacto de la foto */
+            --bg-light: #faf9f6;       /* El tono crema de la interfaz */
             --bg-dark: #1e1f22;        /* El fondo oscuro de la sección inferior */
-            --text-dark: #121212;      /* Texto de los títulos principales */
-            --text-muted: #65676b;     /* Subtítulos y enlaces secundarios */
-            --accent-sites: #008080;   /* Un verde teal/turquesa profundo y profesional para mapas/lugares */
+            --text-dark: #121212;      
+            --text-muted: #65676b;     
+            --accent-sites: #008080;   /* Verde teal corporativo */
             --accent-hover: #006666;
             --border-input: #cccccc;
         }
@@ -31,7 +31,36 @@
             overflow-x: hidden;
         }
 
-        /* 1. NAVBAR SUPERIOR (IDÉNTICO AL LAYOUT DE LA FOTO) */
+        /* PANTALLA DE CARGA (Evita el parpadeo visual antes de la redirección) */
+        #loading-screen {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100vh;
+            background-color: var(--bg-light);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            z-index: 9999;
+            color: var(--accent-sites);
+            font-weight: 600;
+            font-size: 16px;
+            gap: 12px;
+        }
+
+        .spinner {
+            width: 40px;
+            height: 40px;
+            border: 4px solid rgba(0, 128, 128, 0.1);
+            border-left-color: var(--accent-sites);
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        /* NAVBAR SUPERIOR */
         .navbar {
             display: flex;
             justify-content: space-between;
@@ -60,10 +89,6 @@
             letter-spacing: -0.5px;
         }
 
-        .brand i {
-            font-size: 26px;
-        }
-
         .nav-link {
             text-decoration: none;
             color: #222;
@@ -76,13 +101,6 @@
             color: var(--accent-sites);
         }
 
-        .nav-right-link {
-            text-decoration: none;
-            color: #222;
-            font-size: 14px;
-            font-weight: 500;
-        }
-
         .lang-selector {
             display: flex;
             align-items: center;
@@ -92,35 +110,24 @@
             color: #222;
         }
 
-        .help-icon {
-            color: #444;
-            font-size: 18px;
-            cursor: pointer;
-        }
-
-        .btn-login {
-            text-decoration: none;
-            color: var(--accent-sites);
-            font-weight: 600;
-            font-size: 14px;
-        }
-
-        .btn-signup {
-            background-color: var(--accent-sites);
-            color: white;
-            text-decoration: none;
-            padding: 10px 20px;
+        .btn-logout {
+            background-color: transparent;
+            color: #cc3333;
+            border: 1px solid #cc3333;
+            padding: 8px 16px;
             border-radius: 6px;
-            font-size: 14px;
+            font-size: 13px;
             font-weight: 600;
-            transition: background-color 0.2s;
+            cursor: pointer;
+            transition: all 0.2s;
         }
 
-        .btn-signup:hover {
-            background-color: var(--accent-hover);
+        .btn-logout:hover {
+            background-color: #cc3333;
+            color: white;
         }
 
-        /* 2. HERO SECCIÓN CON EL BUSCADOR CENTRAL ALINEADO */
+        /* HERO SECCIÓN CON BUSCADOR */
         .hero-section {
             text-align: center;
             padding: 80px 20px 100px 20px;
@@ -145,7 +152,6 @@
             line-height: 1.6;
         }
 
-        /* BARRA DE BÚSQUEDA EN UNA FILA EXACTA */
         .search-wrapper {
             display: flex;
             align-items: center;
@@ -200,7 +206,7 @@
             background-color: var(--accent-hover);
         }
 
-        /* 3. SECCIÓN INFERIOR OSCURA CON TARJETAS DINÁMICAS */
+        /* SECCIÓN INFERIOR OSCURA */
         .dark-showcase {
             background-color: var(--bg-dark);
             color: white;
@@ -228,7 +234,6 @@
             line-height: 1.5;
         }
 
-        /* FILA DE TARJETAS INFERIORES */
         .cards-grid {
             display: flex;
             justify-content: center;
@@ -245,12 +250,6 @@
             width: 280px;
             text-align: left;
             border: 1px solid rgba(255, 255, 255, 0.05);
-            animation: fadeInUp 0.4s ease forwards;
-        }
-
-        @keyframes fadeInUp {
-            from { opacity: 0; transform: translateY(15px); }
-            to { opacity: 1; transform: translateY(0); }
         }
 
         .card-icon {
@@ -289,118 +288,154 @@
 </head>
 <body>
 
-    <header class="navbar">
-        <div class="nav-left">
-            <a href="#" class="brand">
-                <i class="fa-solid fa-map-location-dot"></i> TheSites
-            </a>
-            <nav class="nav-left" style="gap: 20px;">
-                <a href="#" class="nav-link">Cómo funciona</a>
-                <a href="#" class="nav-link">Añadir Lugar</a>
-                <a href="#" class="nav-link">Explorar Mapas</a>
-            </nav>
-        </div>
-        
-        <div class="nav-right">
-            <a href="#" class="nav-right-link" style="font-size: 14px;">Registrar Negocio</a>
-            <div class="lang-selector">
-                <i class="fa-solid fa-globe"></i> ES (CL)
-            </div>
-            <i class="fa-solid fa-circle-question help-icon"></i>
-            <a href="#" class="btn-login">Entrar</a>
-            <a href="register.html" class="btn-signup">Registrarse</a>
-        </div>
-    </header>
+    <div id="loading-screen">
+        <div class="spinner"></div>
+        <span>Verificando credenciales en TheSites...</span>
+    </div>
 
-    <main class="hero-section">
-        <h1>Buscador de lugares cercanos para ti</h1>
-        <p>Encuentra al instante restaurantes, cafeterías, parques y servicios comerciales a la redonda de tu posición actual. Autoriza tu ubicación para obtener resultados en tiempo real.</p>
+    <div id="app-container" style="display: none;">
         
-        <div class="search-wrapper">
-            <div class="search-input-box">
-                <i class="fa-solid fa-location-crosshairs"></i>
-                <input type="text" id="search-query" placeholder="¿Qué estás buscando? (ej. Cafeterías, Hoteles...)">
+        <header class="navbar">
+            <div class="nav-left">
+                <a href="home.html" class="brand">
+                    <i class="fa-solid fa-map-location-dot"></i> TheSites
+                </a>
+                <nav class="nav-left" style="gap: 20px;">
+                    <a href="home.html" class="nav-link">Ir al Panel</a>
+                    <a href="#" class="nav-link">Explorar Mapas</a>
+                </nav>
             </div>
-            <button class="btn-search" onclick="buscarLugares cercanos()">
-                <i class="fa-solid fa-magnifying-glass"></i> Buscar
-            </button>
-        </div>
-    </main>
+            
+            <div class="nav-right">
+                <div class="lang-selector">
+                    <i class="fa-solid fa-globe"></i> ES (CL)
+                </div>
+                <button class="btn-logout" id="btn-cerrar-sesion">Cerrar Sesión</button>
+            </div>
+        </header>
 
-    <section class="dark-showcase">
-        <h2 id="section-title">TheSites rastrea la infraestructura de tu barrio</h2>
-        <p class="sub-dark" id="section-desc">Activa tu ubicación o escribe una categoría arriba para mapear dinámicamente todos los puntos clave de interés que te rodean.</p>
-        
-        <div class="cards-grid" id="places-container">
-            <div class="feature-card">
-                <div class="card-icon"><i class="fa-solid fa-utensils"></i></div>
-                <h3>Gastronomía Local</h3>
-                <p>Descubre los restaurantes y centros de comida con mejores reseñas a pasos de tu casa.</p>
+        <main class="hero-section">
+            <h1>Buscador de lugares cercanos para ti</h1>
+            <p>Encuentra al instante restaurantes, cafeterías, parques y servicios comerciales a la redonda de tu posición actual. Autoriza tu ubicación para obtener resultados en tiempo real.</p>
+            
+            <div class="search-wrapper">
+                <div class="search-input-box">
+                    <i class="fa-solid fa-location-crosshairs"></i>
+                    <input type="text" id="search-query" placeholder="¿Qué estás buscando? (ej. Cafeterías, Colegios...)">
+                </div>
+                <button class="btn-search" onclick="buscarLugaresCercanos()">
+                    <i class="fa-solid fa-magnifying-glass"></i> Buscar
+                </button>
             </div>
-            <div class="feature-card">
-                <div class="card-icon"><i class="fa-solid fa-mug-hot"></i></div>
-                <h3>Espacios de Café</h3>
-                <p>Filtra por cafeterías óptimas para trabajo remoto o reuniones casuales rápidamente.</p>
+        </main>
+
+        <section class="dark-showcase">
+            <h2 id="section-title">TheSites rastrea la infraestructura de tu barrio</h2>
+            <p class="sub-dark" id="section-desc">Activa tu ubicación o escribe una categoría arriba para mapear dinámicamente todos los puntos clave de interés que te rodean.</p>
+            
+            <div class="cards-grid" id="places-container">
+                <div class="feature-card">
+                    <div class="card-icon"><i class="fa-solid fa-utensils"></i></div>
+                    <h3>Gastronomía Local</h3>
+                    <p>Descubre los restaurantes y centros de comida con mejores reseñas a pasos de tu casa.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="card-icon"><i class="fa-solid fa-mug-hot"></i></div>
+                    <h3>Espacios de Café</h3>
+                    <p>Filtra por cafeterías óptimas para trabajo remoto o reuniones casuales rápidamente.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="card-icon"><i class="fa-solid fa-store"></i></div>
+                    <h3>Comercio Cercano</h3>
+                    <p>Encuentra almacenes, farmacias y supermercados abiertos en tu cuadrante actual.</p>
+                </div>
             </div>
-            <div class="feature-card">
-                <div class="card-icon"><i class="fa-solid fa-store"></i></div>
-                <h3>Comercio Cercano</h3>
-                <p>Encuentra almacenes, farmacias y supermercados abiertos en tu cuadrante actual.</p>
-            </div>
-        </div>
-    </section>
+        </section>
+    </div>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+        import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+
+        // Tu configuración real e idéntica de Firebase
+        const firebaseConfig = {
+            apiKey: "AIzaSyB0XnYCA-jVNsGowSeXpEb4OwUnQZLOitk",
+            authDomain: "thesites2.firebaseapp.com",
+            projectId: "thesites2",
+            storageBucket: "thesites2.firebasestorage.app",
+            messagingSenderId: "372232227026",
+            appId: "1:372232227026:web:77d458d036066ff024450b",
+            measurementId: "G-YL2GDDMJSP"
+        };
+
+        // Inicializar Firebase
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+
+        const loadingScreen = document.getElementById('loading-screen');
+        const appContainer = document.getElementById('app-container');
+
+        // OBSERVADOR CLAVE: Middleware de redirección automática
+        onAuthStateChanged(auth, (user) => {
+            if (!user) {
+                // Si NO hay sesión activa, redirige inmediatamente a login
+                window.location.href = "login.html";
+            } else {
+                // Si SI hay sesión, destruye la pantalla de carga y expone el index seguro
+                loadingScreen.style.display = "none";
+                appContainer.style.display = "block";
+            }
+        });
+
+        // Evento para desloguearse limpiamente
+        document.getElementById('btn-cerrar-sesion').addEventListener('click', () => {
+            signOut(auth).then(() => {
+                window.location.href = "login.html";
+            });
+        });
+    </script>
 
     <script>
-        function buscarLugares() {
+        function buscarLugaresCercanos() {
             const query = document.getElementById('search-query').value.trim();
             const container = document.getElementById('places-container');
             
             if (navigator.geolocation) {
-                // Cambiar textos para simular carga
                 document.getElementById('section-title').innerText = "Rastreando tu señal GPS...";
-                document.getElementById('section-desc').innerText = `Buscando "${query || 'Lugares de interés'}" en tus coordenadas actuales...`;
                 
-                navigator.geolocation.getCurrentPosition(
-                    (position) => {
-                        const lat = position.coords.latitude.toFixed(4);
-                        const lon = position.coords.longitude.toFixed(4);
-                        
-                        document.getElementById('section-title').innerText = "Lugares encontrados cerca de ti";
-                        document.getElementById('section-desc').innerText = `Resultados optimizados para la Latitud: ${lat}, Longitud: ${lon}`;
-                        
-                        // Generar tarjetas simuladas basadas en la ubicación real del usuario
-                        const categoria = query || "Sitio Recomendado";
-                        container.innerHTML = `
-                            <div class="feature-card">
-                                <div class="card-icon"><i class="fa-solid fa-star"></i></div>
-                                <h3>${categoria} Central</h3>
-                                <p>El punto más popular valorado por la comunidad de la zona.</p>
-                                <div class="card-meta"><i class="fa-solid fa-walking"></i> A 450 metros</div>
-                            </div>
-                            <div class="feature-card">
-                                <div class="card-icon"><i class="fa-solid fa-location-dot"></i></div>
-                                <h3>${categoria} Express</h3>
-                                <p>Ideal para visitas rápidas o retiros inmediatos sin filas largas.</p>
-                                <div class="card-meta"><i class="fa-solid fa-walking"></i> A 1.2 km</div>
-                            </div>
-                            <div class="feature-card">
-                                <div class="card-icon"><i class="fa-solid fa-clock"></i></div>
-                                <h3>${categoria} 24/7</h3>
-                                <p>Establecimiento verificado con atención continuada durante toda la noche.</p>
-                                <div class="card-meta"><i class="fa-solid fa-car"></i> A 5 min en auto</div>
-                            </div>
-                        `;
-                    },
-                    (error) => {
-                        alert("Para buscar lugares cercanos, por favor permite el acceso a tu ubicación.");
-                        document.getElementById('section-title').innerText = "Acceso de ubicación denegado";
-                    }
-                );
-            } else {
-                alert("Tu navegador no soporta geolocalización.");
+                navigator.geolocation.getCurrentPosition((position) => {
+                    const lat = position.coords.latitude.toFixed(4);
+                    const lon = position.coords.longitude.toFixed(4);
+                    
+                    document.getElementById('section-title').innerText = "Lugares encontrados cerca de ti";
+                    document.getElementById('section-desc').innerText = `Resultados optimizados para tu cuadrante en Chiguayante (Lat: ${lat}, Lon: ${lon})`;
+                    
+                    const cat = query || "Sitio Verificado";
+                    container.innerHTML = `
+                        <div class="feature-card">
+                            <div class="card-icon"><i class="fa-solid fa-star"></i></div>
+                            <h3>${cat} Central</h3>
+                            <p>El punto más popular valorado por la comunidad de la zona.</p>
+                            <div class="card-meta"><i class="fa-solid fa-walking"></i> A 450 metros</div>
+                        </div>
+                        <div class="feature-card">
+                            <div class="card-icon"><i class="fa-solid fa-location-dot"></i></div>
+                            <h3>${cat} Express</h3>
+                            <p>Ideal para visitas rápidas o retiros inmediatos sin filas largas.</p>
+                            <div class="card-meta"><i class="fa-solid fa-walking"></i> A 1.2 km</div>
+                        </div>
+                        <div class="feature-card">
+                            <div class="card-icon"><i class="fa-solid fa-clock"></i></div>
+                            <h3>${cat} 24/7</h3>
+                            <p>Establecimiento verificado con atención continuada.</p>
+                            <div class="card-meta"><i class="fa-solid fa-car"></i> A 5 min en auto</div>
+                        </div>
+                    `;
+                }, () => {
+                    alert("Por favor permite el acceso GPS para ubicar los comercios.");
+                });
             }
         }
     </script>
-
 </body>
 </html>
