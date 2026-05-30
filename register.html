@@ -56,7 +56,7 @@
             display: inline-flex;
             align-items: center;
             gap: 8px;
-            margin-bottom: 28px;
+            margin-bottom: 24px;
         }
 
         .auth-container h1 {
@@ -129,6 +129,75 @@
 
         .btn-auth-submit:hover {
             background-color: var(--accent-hover);
+        }
+
+        /* DIVIDER */
+        .auth-divider {
+            display: flex;
+            align-items: center;
+            text-align: center;
+            margin: 22px 0;
+            color: var(--text-muted);
+            font-size: 12px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .auth-divider::before, .auth-divider::after {
+            content: '';
+            flex: 1;
+            border-bottom: 1px solid var(--border-soft);
+        }
+
+        .auth-divider:not(:empty)::before { margin-right: .75em; }
+        .auth-divider:not(:empty)::after { margin-left: .75em; }
+
+        /* BOTONES SOCIALES */
+        .social-buttons-grid {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .btn-social {
+            width: 100%;
+            padding: 12px;
+            font-size: 14px;
+            font-weight: 600;
+            border-radius: 6px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            transition: all 0.2s;
+            border: 1px solid #cccccc;
+        }
+
+        .btn-social-google {
+            background-color: #ffffff;
+            color: #3c4043;
+        }
+
+        .btn-social-google:hover {
+            background-color: #f8f9fa;
+            border-color: #b0b4b8;
+        }
+
+        .btn-social-google i {
+            color: #ea4335;
+        }
+
+        .btn-social-github {
+            background-color: #24292f;
+            color: #ffffff;
+            border-color: #24292f;
+        }
+
+        .btn-social-github:hover {
+            background-color: #1a1e22;
+            border-color: #1a1e22;
         }
 
         .auth-footer {
@@ -206,6 +275,17 @@
             <button type="submit" class="btn-auth-submit">Registrarse e Ingresar</button>
         </form>
 
+        <div class="auth-divider">O registrarse con</div>
+
+        <div class="social-buttons-grid">
+            <button type="button" class="btn-social btn-social-google" id="btn-google">
+                <i class="fa-brands fa-google"></i> Registrarse con Google
+            </button>
+            <button type="button" class="btn-social btn-social-github" id="btn-github">
+                <i class="fa-brands fa-github"></i> Registrarse con GitHub
+            </button>
+        </div>
+
         <div class="auth-footer">
             ¿Ya tienes una cuenta? <a href="login.html">Inicia sesión aquí</a>
         </div>
@@ -213,9 +293,8 @@
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-        import { getAuth, createUserWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+        import { getAuth, createUserWithEmailAndPassword, GoogleAuthProvider, GithubAuthProvider, signInWithPopup } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
 
-        // Configuración oficial provista
         const firebaseConfig = {
             apiKey: "AIzaSyB0XnYCA-jVNsGowSeXpEb4OwUnQZLOitk",
             authDomain: "thesites2.firebaseapp.com",
@@ -226,49 +305,69 @@
             measurementId: "G-YL2GDDMJSP"
         };
 
-        // Inicializar Firebase
         const app = initializeApp(firebaseConfig);
         const auth = getAuth(app);
+
+        const googleProvider = new GoogleAuthProvider();
+        const githubProvider = new GithubAuthProvider();
 
         const registerForm = document.getElementById('register-form');
         const errorBox = document.getElementById('error-box');
         const errorText = document.getElementById('error-text');
 
+        function mostrarError(mensaje) {
+            errorBox.style.display = 'flex';
+            errorText.innerText = mensaje;
+        }
+
+        // 1. REGISTRO TRADICIONAL
         registerForm.addEventListener('submit', async (e) => {
             e.preventDefault();
-            errorBox.style.display = 'none'; // Resetear caja de alerta
+            errorBox.style.display = 'none';
 
             const email = document.getElementById('email').value.trim();
             const password = document.getElementById('password').value;
             const confirmPassword = document.getElementById('confirm-password').value;
 
-            // Validación de contraseña local estricta
             if (password !== confirmPassword) {
-                errorBox.style.display = 'flex';
-                errorText.innerText = "Las contraseñas ingresadas no coinciden.";
-                return;
-            }
-
-            if (password.length < 6) {
-                errorBox.style.display = 'flex';
-                errorText.innerText = "La contraseña debe tener al menos 6 caracteres.";
+                mostrarError("Las contraseñas ingresadas no coinciden.");
                 return;
             }
 
             try {
-                // Crear usuario en Firebase Auth
                 await createUserWithEmailAndPassword(auth, email, password);
-                // Registro exitoso: Enviar directo al mapa interactivo principal
                 window.location.href = "home.html";
             } catch (error) {
-                errorBox.style.display = 'flex';
-                // Capturar respuestas de error de la API
                 if (error.code === 'auth/email-already-in-use') {
-                    errorText.innerText = "Este correo ya está registrado en la plataforma.";
-                } else if (error.code === 'auth/invalid-email') {
-                    errorText.innerText = "El formato de correo no es válido.";
+                    mostrarError("Este correo ya está registrado en la plataforma.");
                 } else {
-                    errorText.innerText = "Error en el servidor: " + error.message;
+                    mostrarError("Error en el servidor: " + error.message);
+                }
+            }
+        });
+
+        // 2. AUTH GOOGLE POPUP
+        document.getElementById('btn-google').addEventListener('click', async () => {
+            errorBox.style.display = 'none';
+            try {
+                await signInWithPopup(auth, googleProvider);
+                window.location.href = "home.html";
+            } catch (error) {
+                if (error.code !== 'auth/popup-closed-by-user') {
+                    mostrarError("Error al registrar con Google: " + error.message);
+                }
+            }
+        });
+
+        // 3. AUTH GITHUB POPUP
+        document.getElementById('btn-github').addEventListener('click', async () => {
+            errorBox.style.display = 'none';
+            try {
+                await signInWithPopup(auth, githubProvider);
+                window.location.href = "home.html";
+            } catch (error) {
+                if (error.code !== 'auth/popup-closed-by-user') {
+                    mostrarError("Error al registrar con GitHub: " + error.message);
                 }
             }
         });
